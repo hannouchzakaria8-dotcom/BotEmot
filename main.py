@@ -6555,9 +6555,26 @@ async def MaiiiinE():
     if not LoGinDaTa: print("خطأ في الحصول على المنافذ من بيانات الدخول!") ; return None
     LoGinDaTaUncRypTinG = await DecRypTLoGinDaTa(LoGinDaTa)
     OnLinePorTs = LoGinDaTaUncRypTinG.Online_IP_Port
-    ChaTPorTs = LoGinDaTaUncRypTinG.AccountIP_Port
-    OnLineiP , OnLineporT = OnLinePorTs.split(":")
-    ChaTiP , ChaTporT = ChaTPorTs.split(":")
+    OnLinePorTs = LoGinDaTaUncRypTinG.Online_IP_Port
+ChaTPorTs = LoGinDaTaUncRypTinG.AccountIP_Port
+
+# تقسيم Online IP:Port بشكل آمن
+OnLine_parts = OnLinePorTs.split(":")
+OnLineiP = OnLine_parts[0]
+if len(OnLine_parts) > 1:
+    OnLineporT = OnLine_parts[1]
+else:
+    OnLineporT = "80"  # قيمة افتراضية للمنفذ
+    print(f"تحذير: لم يتم العثور على منفذ في Online_IP_Port، استخدام المنفذ الافتراضي 80")
+
+# تقسيم Chat IP:Port بشكل آمن
+Chat_parts = ChaTPorTs.split(":")
+ChaTiP = Chat_parts[0]
+if len(Chat_parts) > 1:
+    ChaTporT = Chat_parts[1]
+else:
+    ChaTporT = "80"  # قيمة افتراضية للمنفذ
+    print(f"تحذير: لم يتم العثور على منفذ في AccountIP_Port، استخدام المنفذ الافتراضي 80")
     acc_name = LoGinDaTaUncRypTinG.AccountName
     #print(acc_name)
     
