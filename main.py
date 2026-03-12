@@ -36,9 +36,9 @@ key2 = "mg24"
 BYPASS_TOKEN = "your_bypass_token_here"
 
 # ضع توكن البوت هنا مباشرة
-BOT_TOKEN = "8248104861:AAEmzo4Bx2Ss6uiT3zma4CbCUnU717tRIEw"
+BOT_TOKEN = "8114634187:AAHvWfHfvwNreGfPJ8nvD7cFKLQCf3Ys93E"
 ADMIN_TELEGRAM_ID = 6848455321
-BASE_WEBHOOK_URL = "https://botemot-2.onrender.com"   # <- تم التعديل حسب رابطك الجديد
+BASE_WEBHOOK_URL = "https://botemot-2.onrender.com"  # رابط تطبيقك على Render
 
 # قنوات الاشتراك الإجباري
 REQUIRED_CHANNEL = "@Ziko_Tim"
@@ -55,7 +55,7 @@ telegram_bot_running = False
 telegram_bot = None
 telegram_dp = None
 
-# --- المتغيرات العامة التي تحتاجها دوال الأوامر ---
+# المتغيرات العامة التي تحتاجها دوال الأوامر
 key = None
 iv = None
 region = None
@@ -479,10 +479,50 @@ ALL_EMOTE = {
 }
 
 EMOTE_MAP = {
-    1: 909000063, 2: 909000081, 3: 909000075, 4: 909000085, 5: 909000134,
-    6: 909000098, 7: 909035007, 8: 909051012, 9: 909000141, 10: 909034008,
-    11: 909041002, 12: 909039004, 13: 909042008, 14: 909051014, 15: 909039012,
-    16: 909040010, 17: 909035010, 18: 909041005, 19: 909051003, 20: 909034001
+    1: 909000063,
+    2: 909000081,
+    3: 909000075,
+    4: 909000085,
+    5: 909000134,
+    6: 909000098,
+    7: 909035007,
+    8: 909051012,
+    9: 909000141,
+    10: 909034008,
+    11: 909041002,
+    12: 909039004,
+    13: 909042008,
+    14: 909051014,
+    15: 909039012,
+    16: 909040010,
+    17: 909035010,
+    18: 909041005,
+    19: 909051003,
+    20: 909034001
+}
+
+# أسماء الرقصات التطورية (باسم ZIKO)
+EVO_NAMES = {
+    1: "AK4 ZIKO",
+    2: "SCAR4 ZIKO",
+    3: "MP40 ZIKO",
+    4: "MP40 ZIKO 2",
+    5: "M1014 ZIKO",
+    6: "M1014 ZIKO 2",
+    7: "XM8 ZIKO",
+    8: "Famas ZIKO",
+    9: "UMP ZIKO",
+    10: "M1887 ZIKO",
+    11: "Woodpecker ZIKO",
+    12: "Groza ZIKO",
+    13: "M4A1 ZIKO",
+    14: "Thompson ZIKO",
+    15: "G18 ZIKO",
+    16: "Parafal ZIKO",
+    17: "P90 ZIKO",
+    18: "M60 ZIKO",
+    19: "تطورية ZIKO 19",
+    20: "تطورية ZIKO 20"
 }
 
 # ------------------- دوال التحقق من الاشتراك -------------------
@@ -545,28 +585,38 @@ async def telegram_startup():
         await runner.cleanup()
 
 async def register_handlers(dp: Dispatcher):
-    """تسجيل معالجات الأوامر المطلوبة فقط"""
+    """تسجيل معالجات الأوامر المطلوبة"""
 
     @dp.message(Command("help"))
     async def help_cmd(message: Message):
         if not await require_subscription(message):
             return
         help_text = """
-🤖 **بوت ZAKARIA - أوامر التلغرام**
+━━━━━━━━━━━━━━━━━━━━
+〔 🤖 ZIKO BOT 〕
+━━━━━━━━━━━━━━━━━━━━
 
-**أوامر المجموعة:**
-/3 [UID] - إنشاء مجموعة 3 لاعبين للمعرف المحدد
-/5 [UID] - إنشاء مجموعة 5 لاعبين
-/6 [UID] - إنشاء مجموعة 6 لاعبين
+ **🎯 أوامر الترقيص:**
+
+/dance [team_code] [UID] [1-414]
+├─ إرسال رقصة محددة
+└─ ينضم → يرقص → يغادر
+
+/evo [team_code] [UID] [1-20]
+├─ إرسال رقصة مطورة (ZIKO)
+└─ ينضم → يرقص → يغادر
+
+ **👥 أوامر المجموعة:**
+
+/3 [UID] - إنشاء فريق 3 لاعبين
+/5 [UID] - إنشاء فريق 5 لاعبين
+/6 [UID] - إنشاء فريق 6 لاعبين
 /inv [UID] - إرسال دعوة للاعب
 
-**أوامر الرقص والإيموجي:**
-/dance [team_code] [UID] [رقم_الرقصة 1-414] - انضمام، رقصة عادية، مغادرة
-/evo [team_code] [UID] [رقم_الرقصة 1-20] - انضمام، رقصة تطورية، مغادرة
-
-**أوامر متقدمة:**
-/lag [team_code] - هجوم تأخير (انضمام/مغادرة سريع)
-/stop_lag - إيقاف هجوم التأخير
+━━━━━━━━━━━━━━━━━━━━
+👤 المالك: @noseyrobot
+🤖 البوت: @ZikoB0SS
+━━━━━━━━━━━━━━━━━━━━
 """
         await message.reply(help_text)
 
@@ -583,7 +633,7 @@ async def register_handlers(dp: Dispatcher):
         if not target_uid.isdigit():
             await message.reply("❌ الرجاء إدخال معرف صحيح!")
             return
-        size = int(message.text[1])  # الرقم بعد الشرطة
+        size = int(message.text[1])
         await message.reply(f"🚀 جاري إنشاء مجموعة {size} لاعبين للمعرف {target_uid}...")
         try:
             global online_writer, whisper_writer, key, iv, region
@@ -599,7 +649,7 @@ async def register_handlers(dp: Dispatcher):
             E = await ExiT(None, key, iv)
             await asyncio.sleep(3.5)
             await SEndPacKeT(whisper_writer, online_writer, 'OnLine', E)
-            await message.reply(f"✅ تم إنشاء مجموعة {size} لاعبين وإرسال الدعوة إلى {target_uid}!")
+            await message.reply(f"✅ تم إنشاء فريق {size} لاعبين وإرسال الدعوة إلى {target_uid}!")
         except Exception as e:
             await message.reply(f"❌ خطأ: {str(e)}")
 
@@ -683,7 +733,10 @@ async def register_handlers(dp: Dispatcher):
             await message.reply("❌ رقم الرقصة غير صالح")
             return
 
-        await message.reply(f"🚀 بدء أمر الرقص التطوري: الفريق {team_code}, الهدف {target_uid}, الرقصة {emote_number}")
+        # الحصول على اسم الرقصة من القاموس
+        emote_name = EVO_NAMES.get(emote_number, f"الرقصة {emote_number}")
+
+        await message.reply(f"🚀 بدء أمر الرقص التطوري: الفريق {team_code}, الهدف {target_uid}, الرقصة {emote_name}")
         try:
             global online_writer, whisper_writer, key, iv, region
             emote_id = EMOTE_MAP.get(emote_number)
@@ -700,7 +753,7 @@ async def register_handlers(dp: Dispatcher):
             leave_packet = await ExiT(None, key, iv)
             await SEndPacKeT(whisper_writer, online_writer, 'OnLine', leave_packet)
 
-            await message.reply(f"✅ تم إرسال الرقصة التطورية {emote_number} إلى {target_uid} والمغادرة.")
+            await message.reply(f"✅ تم إرسال الرقصة المطورة **{emote_name}** إلى `{target_uid}` والمغادرة.")
         except Exception as e:
             await message.reply(f"❌ خطأ: {str(e)}")
 
@@ -738,7 +791,7 @@ async def register_handlers(dp: Dispatcher):
         else:
             await message.reply("❌ لا يوجد هجوم تأخير نشط.")
 
-# ------------------- دوال اللعبة الأساسية (موجودة في xC4 و xHeaders) -------------------
+# ------------------- دوال اللعبة الأساسية -------------------
 async def lag_team_loop(team_code, key, iv, region):
     global lag_running
     count = 0
@@ -758,7 +811,7 @@ async def lag_team_loop(team_code, key, iv, region):
 
 # ------------------- الدالة الرئيسية -------------------
 async def MaiiiinE():
-    global key, iv, region  # <-- هذا السطر هو الحل لمشكلة عدم تعريف المتغيرات
+    global key, iv, region
     Uid, Pw = '4378068850', '8C583277F6A0221993BAC8FBBD712BC25B171A445A34FB1DD0966609CB74729D'
 
     open_id, access_token = await GeNeRaTeAccEss(Uid, Pw)
@@ -837,6 +890,6 @@ async def StarTinG():
             print(f"خطأ في TCP - {e} => إعادة التشغيل ...")
 
 if __name__ == '__main__':
-    # تم تعطيل Insta API لتجنب الأخطاء
+    # تم تعطيل Insta API
     # threading.Thread(target=start_insta_api, daemon=True).start()
     asyncio.run(StarTinG())
