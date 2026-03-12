@@ -10,7 +10,7 @@ pycryptodome>=3.19.0
 
 # بروتوكول بافر (Protobuf)
 protobuf>=4.25.0
-protobuf-decoder>=1.4.0
+protobuf-decoder==0.4.0
 google>=3.0.0
 
 # أدوات النظام والمراقبة
