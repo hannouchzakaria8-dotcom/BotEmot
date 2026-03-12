@@ -38,7 +38,7 @@ BYPASS_TOKEN = "your_bypass_token_here"
 # ضع توكن البوت هنا مباشرة
 BOT_TOKEN = "8248104861:AAEmzo4Bx2Ss6uiT3zma4CbCUnU717tRIEw"
 ADMIN_TELEGRAM_ID = 6848455321
-BASE_WEBHOOK_URL = "https://botemot-2.onrender.com"   # غيّره بعد النشر
+BASE_WEBHOOK_URL = "https://botemot-2.onrender.com"   # <- تم التعديل حسب رابطك الجديد
 
 # قنوات الاشتراك الإجباري
 REQUIRED_CHANNEL = "@Ziko_Tim"
@@ -55,10 +55,12 @@ telegram_bot_running = False
 telegram_bot = None
 telegram_dp = None
 
-# ------------------- تعيينات الإيموجيات (اختصار – يمكنك إكمالها لاحقاً) -------------------
-# القائمة الكاملة للإيموجيات العادية (1-414) طويلة جداً، نكتفي بالجزء الذي يظهر في الملفات.
-# أنصحك بنسخ القواميس كاملة من ملف main.py الذي أرسلته سابقاً إذا احتجت 414 إيموجي.
-# هنا سأضع نموذجاً مختصراً للتوضيح، لكن في مشروعك الحقيقي يجب أن تكون القواميس كاملة.
+# --- المتغيرات العامة التي تحتاجها دوال الأوامر ---
+key = None
+iv = None
+region = None
+
+# ------------------- تعيينات الإيموجيات -------------------
 ALL_EMOTE = {
     1: 909000001,
     2: 909000002,
@@ -474,7 +476,6 @@ ALL_EMOTE = {
     412: 909050028,
     413: 909547001,
     414: 909550001
-    # ... (يمكنك إكمال البقية حسب الملف الأصلي)
 }
 
 EMOTE_MAP = {
@@ -544,7 +545,7 @@ async def telegram_startup():
         await runner.cleanup()
 
 async def register_handlers(dp: Dispatcher):
-    """تسجيل معالجات الأوامر المطلوبة فقط (المجموعة، الدعوة، الرقص، الإيموجي التطوري، الـ lag)"""
+    """تسجيل معالجات الأوامر المطلوبة فقط"""
 
     @dp.message(Command("help"))
     async def help_cmd(message: Message):
@@ -616,6 +617,7 @@ async def register_handlers(dp: Dispatcher):
             return
         await message.reply(f"🚀 جاري إرسال دعوة إلى {target_uid}...")
         try:
+            global online_writer, whisper_writer, key, iv, region
             V = await SEnd_InV(4, int(target_uid), key, iv, region)
             await SEndPacKeT(whisper_writer, online_writer, 'OnLine', V)
             await message.reply(f"✅ تم إرسال الدعوة إلى {target_uid}!")
@@ -643,6 +645,7 @@ async def register_handlers(dp: Dispatcher):
 
         await message.reply(f"🚀 بدء أمر الرقص: الفريق {team_code}, الهدف {target_uid}, الرقصة {emote_number}")
         try:
+            global online_writer, whisper_writer, key, iv, region
             emote_id = ALL_EMOTE.get(emote_number)
             if not emote_id:
                 await message.reply("❌ معرف الرقصة غير صالح!")
@@ -682,6 +685,7 @@ async def register_handlers(dp: Dispatcher):
 
         await message.reply(f"🚀 بدء أمر الرقص التطوري: الفريق {team_code}, الهدف {target_uid}, الرقصة {emote_number}")
         try:
+            global online_writer, whisper_writer, key, iv, region
             emote_id = EMOTE_MAP.get(emote_number)
             if not emote_id:
                 await message.reply("❌ معرف الرقصة التطورية غير صالح!")
@@ -711,7 +715,7 @@ async def register_handlers(dp: Dispatcher):
         team_code = parts[1]
         await message.reply(f"🚀 بدء هجوم التأخير على الفريق {team_code}...")
         try:
-            global lag_running, lag_task
+            global lag_running, lag_task, key, iv, region
             if lag_task and not lag_task.done():
                 lag_running = False
                 lag_task.cancel()
@@ -735,8 +739,6 @@ async def register_handlers(dp: Dispatcher):
             await message.reply("❌ لا يوجد هجوم تأخير نشط.")
 
 # ------------------- دوال اللعبة الأساسية (موجودة في xC4 و xHeaders) -------------------
-# لضمان عدم فقدان أي دالة، نعتمد على أن xC4 و xHeaders تم استيرادهما في الأعلى.
-# الدالة lag_team_loop معرفة في xC4، لكن إن لم تكن موجودة نضيفها هنا:
 async def lag_team_loop(team_code, key, iv, region):
     global lag_running
     count = 0
@@ -756,7 +758,7 @@ async def lag_team_loop(team_code, key, iv, region):
 
 # ------------------- الدالة الرئيسية -------------------
 async def MaiiiinE():
-    # بيانات الحساب (يفضل وضعها في متغيرات بيئة لأمان أكثر، لكن حسب طلبك وضعناها ثابتة)
+    global key, iv, region  # <-- هذا السطر هو الحل لمشكلة عدم تعريف المتغيرات
     Uid, Pw = '4378068850', '8C583277F6A0221993BAC8FBBD712BC25B171A445A34FB1DD0966609CB74729D'
 
     open_id, access_token = await GeNeRaTeAccEss(Uid, Pw)
@@ -835,7 +837,6 @@ async def StarTinG():
             print(f"خطأ في TCP - {e} => إعادة التشغيل ...")
 
 if __name__ == '__main__':
-    #threading.Thread(target=start_insta_api, daemon=True).start()
-
+    # تم تعطيل Insta API لتجنب الأخطاء
+    # threading.Thread(target=start_insta_api, daemon=True).start()
     asyncio.run(StarTinG())
-
