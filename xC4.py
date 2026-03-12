@@ -8,6 +8,7 @@ from Crypto.Util.Padding import pad, unpad
 from datetime import datetime
 from google.protobuf.timestamp_pb2 import Timestamp
 from Pb2 import MajoRLoGinrEq_pb2, MajoRLoGinrEs_pb2, PorTs_pb2, DEcwHisPErMsG_pb2, sQ_pb2
+import aiohttp  # هذا السطر هو المهم لإزالة الخطأ
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
