@@ -1,0 +1,14 @@
+requests
+urllib3
+aiohttp
+httpx
+PyJWT
+pycryptodome
+protobuf
+protobuf-decoder
+psutil
+pytz
+flask
+cfonts
+colorama
+aiogram==3.4.0
