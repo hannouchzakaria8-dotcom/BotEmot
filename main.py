@@ -835,5 +835,6 @@ async def StarTinG():
             print(f"خطأ في TCP - {e} => إعادة التشغيل ...")
 
 if __name__ == '__main__':
-    threading.Thread(target=start_insta_api, daemon=True).start()
+    #threading.Thread(target=start_insta_api, daemon=True).start()
+
     asyncio.run(StarTinG())
