@@ -6636,4 +6636,3 @@ async def StarTinG():
 if __name__ == '__main__':
     threading.Thread(target=start_insta_api, daemon=True).start()
     asyncio.run(StarTinG())
-[file content end]
