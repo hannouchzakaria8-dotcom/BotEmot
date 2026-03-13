@@ -22,7 +22,7 @@ from Crypto.Util.Padding import pad, unpad
 # Telegram Bot Imports
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import Message, BufferedInputFile
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 import logging
@@ -479,11 +479,118 @@ ALL_EMOTE = {
 }
 
 EMOTE_MAP = {
-    1: 909000063, 2: 909000081, 3: 909000075, 4: 909000085, 5: 909000134,
-    6: 909000098, 7: 909035007, 8: 909051012, 9: 909000141, 10: 909034008,
-    11: 909041002, 12: 909039004, 13: 909042008, 14: 909051014, 15: 909039012,
-    16: 909040010, 17: 909035010, 18: 909041005, 19: 909051003, 20: 909034001
+    1: 909000063,
+    2: 909000081,
+    3: 909000075,
+    4: 909000085,
+    5: 909000134,
+    6: 909000098,
+    7: 909035007,
+    8: 909051012,
+    9: 909000141,
+    10: 909034008,
+    11: 909041002,
+    12: 909039004,
+    13: 909042008,
+    14: 909051014,
+    15: 909039012,
+    16: 909040010,
+    17: 909035010,
+    18: 909041005,
+    19: 909051003,
+    20: 909034001
 }
+
+# أسماء الرقصات التطورية
+EVO_NAMES = {
+    1: "AK4 ZIKO",
+    2: "SCAR4 ZIKO",
+    3: "MP40 ZIKO",
+    4: "MP40 ZIKO 2",
+    5: "M1014 ZIKO",
+    6: "M1014 ZIKO 2",
+    7: "XM8 ZIKO",
+    8: "Famas ZIKO",
+    9: "UMP ZIKO",
+    10: "M1887 ZIKO",
+    11: "Woodpecker ZIKO",
+    12: "Groza ZIKO",
+    13: "M4A1 ZIKO",
+    14: "Thompson ZIKO",
+    15: "G18 ZIKO",
+    16: "Parafal ZIKO",
+    17: "P90 ZIKO",
+    18: "M60 ZIKO",
+    19: "تطورية ZIKO 19",
+    20: "تطورية ZIKO 20"
+}
+
+# ------------------- دوال الـ API الجديدة -------------------
+async def fetch_player_info(uid: str) -> dict:
+    """جلب جميع معلومات اللاعب من الـ API"""
+    url = f"https://foubia-info-ff.vercel.app/{uid}"
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=10) as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                else:
+                    print(f"خطأ في جلب المعلومات: {resp.status}")
+                    return None
+    except Exception as e:
+        print(f"استثناء في جلب المعلومات: {e}")
+        return None
+
+async def fetch_ban_status(uid: str) -> dict:
+    """جلب حالة الحظر من الـ API"""
+    url = f"https://foubia-ban-check.vercel.app/bancheck?key=xTzPrO&uid={uid}"
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=10) as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                else:
+                    print(f"خطأ في جلب حالة الحظر: {resp.status}")
+                    return None
+    except Exception as e:
+        print(f"استثناء في جلب حالة الحظر: {e}")
+        return None
+
+async def fetch_outfit_image(uid: str, region: str, max_retries: int = 2, delay: int = 3) -> bytes:
+    """جلب صورة الأوتفيت مع إعادة المحاولة"""
+    url = f"https://ffoutfitapis.vercel.app/outfit-image?uid={uid}&region={region}&key=99day"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://ffoutfitapis.vercel.app/'
+    }
+    
+    for attempt in range(max_retries):
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers, timeout=30) as resp:
+                    if resp.status == 200:
+                        return await resp.read()
+                    elif resp.status in [403, 404, 500, 502, 503, 504]:
+                        print(f"⚠️ محاولة {attempt+1}: الـ API يعيد {resp.status}. قد تكون الصورة قيد التوليد. ننتظر {delay} ثوانٍ...")
+                        if attempt < max_retries - 1:
+                            await asyncio.sleep(delay)
+                        continue
+                    else:
+                        print(f"❌ خطأ غير متوقع في جلب الأوتفيت: {resp.status}")
+                        return None
+        except asyncio.TimeoutError:
+            print(f"⚠️ محاولة {attempt+1}: انتهت المهلة. نعيد المحاولة بعد {delay} ثوانٍ...")
+            if attempt < max_retries - 1:
+                await asyncio.sleep(delay)
+            continue
+        except Exception as e:
+            print(f"❌ استثناء في جلب الأوتفيت: {e}")
+            return None
+    
+    print("❌ فشلت جميع محاولات جلب الأوتفيت.")
+    return None
 
 # ------------------- دوال التحقق من الاشتراك -------------------
 async def check_subscription(user_id: int) -> bool:
@@ -545,20 +652,19 @@ async def telegram_startup():
         await runner.cleanup()
 
 async def register_handlers(dp: Dispatcher):
-    """تسجيل معالجات الأوامر - نسخة محسنة (بدون أوامر lag)"""
+    """تسجيل معالجات الأوامر - نسخة محسنة حسب الطلب"""
 
     @dp.message(Command("start"))
     async def start_cmd(message: Message):
-        """معالج أمر البدء - يعمل بشكل مختلف للمطور والمستخدمين العاديين"""
         user_id = message.from_user.id
         chat_type = message.chat.type
         
         # المطور يعمل لديه البوت في الخاص
         if user_id == ADMIN_TELEGRAM_ID:
             welcome_text = """
-╔════════════════════════════
-║       🔥 FPI SX COMMAND 🔥   ║
-╚════════════════════════════
+🔥 <b>FPI SX COMMAND</b> 🔥
+
+━━━━━━━━━━━━━━━━━━━━━━
 
 <b>🛠️ ADMIN PANEL</b>
 
@@ -567,6 +673,7 @@ async def register_handlers(dp: Dispatcher):
 • Use /help to see all commands
 
 ━━━━━━━━━━━━━━━━━━━━━━
+
 👑 <b>Developer:</b> @ZikoB0SS
 🌟 <b>Sponsor:</b> @noseyrobot
 """
@@ -575,7 +682,6 @@ async def register_handlers(dp: Dispatcher):
         
         # المستخدمين العاديين - لا يعمل في الخاص
         if chat_type == "private":
-            # إرسال رابط المجموعة فقط
             markup = types.InlineKeyboardMarkup(inline_keyboard=[
                 [types.InlineKeyboardButton(text="📢 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
             ])
@@ -601,29 +707,40 @@ async def register_handlers(dp: Dispatcher):
             )
             return
         
-        # قائمة الأوامر الرئيسية (بدون lag)
+        # قائمة الأوامر الرئيسية
         commands_text = """
 🔥 <b>FPI SX COMMAND</b> 🔥
 
 ━━━━━━━━━━━━━━━━━━━━━━
+
+<b>🎯 SQUAD COMMANDS</b>
 /3 [UID] — Open 3‑player squad
 /5 [UID] — Open 5‑player squad
 /6 [UID] — Open 6‑player squad
 /inv [UID] — Send invite to player
 
 ━━━━━━━━━━━━━━━━━━━━━━
+
+<b>🕺 DANCE COMMANDS</b>
 /dance [code] [UID] [1-414] — Send specific emote
 /evo [code] [UID] [1-20] — Send evolution emote
 
 ━━━━━━━━━━━━━━━━━━━━━━
-🌟 Sponsor: @noseyrobot
-👑 Developer: @ZikoB0SS
+
+<b>📊 INFO COMMANDS</b>
+/outfit [UID] — Get outfit image
+/all_info [UID] — Get all player info
+/check [UID] — Check ban status
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🌟 <b>Sponsor:</b> @noseyrobot
+👑 <b>Developer:</b> @ZikoB0SS
 """
         await message.reply(commands_text, parse_mode="HTML")
 
     @dp.message(Command("help"))
     async def help_cmd(message: Message):
-        """نفس قائمة الأوامر بدون lag"""
         user_id = message.from_user.id
         chat_type = message.chat.type
         
@@ -633,23 +750,35 @@ async def register_handlers(dp: Dispatcher):
 🔥 <b>FPI SX COMMAND</b> 🔥
 
 ━━━━━━━━━━━━━━━━━━━━━━
+
+<b>🎯 SQUAD COMMANDS</b>
 /3 [UID] — Open 3‑player squad
 /5 [UID] — Open 5‑player squad
 /6 [UID] — Open 6‑player squad
 /inv [UID] — Send invite to player
 
 ━━━━━━━━━━━━━━━━━━━━━━
+
+<b>🕺 DANCE COMMANDS</b>
 /dance [code] [UID] [1-414] — Send specific emote
 /evo [code] [UID] [1-20] — Send evolution emote
 
 ━━━━━━━━━━━━━━━━━━━━━━
-🌟 Sponsor: @noseyrobot
-👑 Developer: @ZikoB0SS
+
+<b>📊 INFO COMMANDS</b>
+/outfit [UID] — Get outfit image
+/all_info [UID] — Get all player info
+/check [UID] — Check ban status
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🌟 <b>Sponsor:</b> @noseyrobot
+👑 <b>Developer:</b> @ZikoB0SS
 """
             await message.reply(commands_text, parse_mode="HTML")
             return
         
-        # في المجموعة - نفس القائمة
+        # في المجموعة
         if chat_type in ["group", "supergroup"]:
             if not await check_subscription(user_id):
                 return
@@ -657,18 +786,30 @@ async def register_handlers(dp: Dispatcher):
 🔥 <b>FPI SX COMMAND</b> 🔥
 
 ━━━━━━━━━━━━━━━━━━━━━━
+
+<b>🎯 SQUAD COMMANDS</b>
 /3 [UID] — Open 3‑player squad
 /5 [UID] — Open 5‑player squad
 /6 [UID] — Open 6‑player squad
 /inv [UID] — Send invite to player
 
 ━━━━━━━━━━━━━━━━━━━━━━
+
+<b>🕺 DANCE COMMANDS</b>
 /dance [code] [UID] [1-414] — Send specific emote
 /evo [code] [UID] [1-20] — Send evolution emote
 
 ━━━━━━━━━━━━━━━━━━━━━━
-🌟 Sponsor: @noseyrobot
-👑 Developer: @ZikoB0SS
+
+<b>📊 INFO COMMANDS</b>
+/outfit [UID] — Get outfit image
+/all_info [UID] — Get all player info
+/check [UID] — Check ban status
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🌟 <b>Sponsor:</b> @noseyrobot
+👑 <b>Developer:</b> @ZikoB0SS
 """
             await message.reply(commands_text, parse_mode="HTML")
         else:
@@ -683,7 +824,8 @@ async def register_handlers(dp: Dispatcher):
                 parse_mode="HTML"
             )
 
-    # باقي الأوامر كما هي بدون تغيير (3, 5, 6, inv, dance, evo)
+    # باقي الأوامر كما هي (3, 5, 6, inv, dance, evo, outfit, all_info, check)
+    # مع حذف أوامر lag, stop_lag, play
     @dp.message(Command("3", "5", "6"))
     async def squad_size_cmd(message: Message):
         if not await require_subscription(message):
@@ -796,12 +938,14 @@ async def register_handlers(dp: Dispatcher):
             await message.reply("❌ Invalid emote number")
             return
 
-        await message.reply(f"🚀 Starting evo dance: Team {team_code}, Target {target_uid}, Emote {emote_number}")
+        emote_name = EVO_NAMES.get(emote_number, f"Evolution {emote_number}")
+
+        await message.reply(f"🚀 Starting evolution dance: Team {team_code}, Target {target_uid}, Emote {emote_name}")
         try:
             global online_writer, whisper_writer, key, iv, region
             emote_id = EMOTE_MAP.get(emote_number)
             if not emote_id:
-                await message.reply("❌ Invalid evo emote ID!")
+                await message.reply("❌ Invalid evolution emote ID!")
                 return
 
             join_packet = await GenJoinSquadsPacket(team_code, key, iv)
@@ -813,11 +957,148 @@ async def register_handlers(dp: Dispatcher):
             leave_packet = await ExiT(None, key, iv)
             await SEndPacKeT(whisper_writer, online_writer, 'OnLine', leave_packet)
 
-            await message.reply(f"✅ Evo emote {emote_number} sent to {target_uid}!")
+            await message.reply(f"✅ Evolution emote **{emote_name}** sent to `{target_uid}`!")
         except Exception as e:
             await message.reply(f"❌ Error: {str(e)}")
 
-# ------------------- دوال اللعبة الأساسية (موجودة في xC4 و xHeaders) -------------------
+    # أوامر المعلومات الجديدة (من الكود الأصلي)
+    @dp.message(Command("outfit"))
+    async def outfit_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ Usage: /outfit [UID]\nExample: /outfit 123456789")
+            return
+        
+        uid = parts[1]
+        if not uid.isdigit():
+            await message.reply("❌ Invalid UID!")
+            return
+        
+        status_msg = await message.reply("🔄 Preparing outfit image... (may take a few seconds)")
+        
+        info = await fetch_player_info(uid)
+        if not info or not info.get('basicinfo'):
+            await status_msg.edit_text("❌ Failed to fetch player info.")
+            return
+        
+        region_api = info['basicinfo'][0].get('region', 'ME').lower()
+        valid_regions = ['me', 'ind', 'bd', 'sg', 'id', 'th', 'vn', 'ru', 'br', 'na', 'eu']
+        if region_api not in valid_regions:
+            region_api = 'me'
+        
+        await status_msg.edit_text(f"🔄 Generating outfit image for region **{region_api.upper()}**...")
+        
+        image_bytes = await fetch_outfit_image(uid, region_api, max_retries=3, delay=4)
+        
+        if not image_bytes:
+            await status_msg.edit_text("❌ Failed to fetch outfit image.")
+            return
+        
+        photo = BufferedInputFile(image_bytes, filename=f"{uid}_outfit.jpg")
+        await message.reply_photo(
+            photo=photo, 
+            caption=f"🎭 **Player Outfit**\n🆔 `{uid}`\n🌍 Region: **{region_api.upper()}**"
+        )
+        await status_msg.delete()
+
+    @dp.message(Command("all_info"))
+    async def all_info_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ Usage: /all_info [UID]\nExample: /all_info 123456789")
+            return
+        
+        uid = parts[1]
+        if not uid.isdigit():
+            await message.reply("❌ Invalid UID!")
+            return
+        
+        status_msg = await message.reply("🔄 Fetching player info...")
+        
+        data = await fetch_player_info(uid)
+        if not data:
+            await status_msg.edit_text("❌ Failed to fetch info. Check UID.")
+            return
+        
+        reply = f"📊 **Player Info** `{uid}`\n"
+        reply += "━━━━━━━━━━━━━━━━━━━━\n"
+        
+        if data.get('basicinfo'):
+            b = data['basicinfo'][0]
+            reply += f"👤 **Name:** {b.get('username', 'Unknown')}\n"
+            reply += f"📈 **Level:** {b.get('level', 'N/A')}\n"
+            reply += f"❤️ **Likes:** {b.get('likes', 0):,}\n"
+            reply += f"🌍 **Region:** {b.get('region', 'N/A')}\n"
+            reply += f"📝 **Bio:** {b.get('bio', 'None')[:50]}...\n"
+            reply += f"📅 **Created:** {datetime.fromtimestamp(b.get('createat', 0)).strftime('%Y-%m-%d')}\n"
+            reply += f"🕒 **Last Login:** {datetime.fromtimestamp(b.get('lastlogin', 0)).strftime('%Y-%m-%d %H:%M')}\n\n"
+        
+        if data.get('claninfo'):
+            c = data['claninfo'][0]
+            reply += f"🏰 **Guild:** {c.get('clanname', 'None')}\n"
+            reply += f"🆔 **Guild ID:** `{c.get('clanid', 'N/A')}`\n"
+            reply += f"📊 **Guild Level:** {c.get('guildlevel', 'N/A')}\n"
+            reply += f"👥 **Members:** {c.get('livemember', 'N/A')}\n\n"
+        else:
+            reply += "🏰 **Guild:** None\n\n"
+        
+        if data.get('clanadmin'):
+            reply += "👑 **Guild Admins:**\n"
+            for admin in data['clanadmin'][:3]:
+                reply += f"├─ {admin.get('adminname', 'Unknown')} (Level {admin.get('level', 'N/A')})\n"
+        
+        reply += "━━━━━━━━━━━━━━━━━━━━"
+        
+        await status_msg.edit_text(reply, parse_mode='Markdown')
+
+    @dp.message(Command("check"))
+    async def check_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ Usage: /check [UID]\nExample: /check 123456789")
+            return
+        
+        uid = parts[1]
+        if not uid.isdigit():
+            await message.reply("❌ Invalid UID!")
+            return
+        
+        status_msg = await message.reply("🔄 Checking ban status...")
+        
+        ban_data = await fetch_ban_status(uid)
+        if not ban_data:
+            await status_msg.edit_text("❌ Failed to check ban status.")
+            return
+        
+        info = await fetch_player_info(uid)
+        
+        username = "Unknown"
+        level = "N/A"
+        if info and info.get('basicinfo'):
+            username = info['basicinfo'][0].get('username', 'Unknown')
+            level = info['basicinfo'][0].get('level', 'N/A')
+        
+        is_banned = ban_data.get('is_banned', False)
+        
+        status_emoji = "🚫 **BANNED**" if is_banned else "✅ **NOT BANNED**"
+        
+        reply = f"🔍 **Ban Check**\n"
+        reply += "━━━━━━━━━━━━━━━━━━━━\n"
+        reply += f"👤 **Name:** {username}\n"
+        reply += f"📈 **Level:** {level}\n"
+        reply += f"🆔 **UID:** `{uid}`\n"
+        reply += f"🚦 **Status:** {status_emoji}\n"
+        reply += "━━━━━━━━━━━━━━━━━━━━"
+        
+        await status_msg.edit_text(reply, parse_mode='Markdown')
+
+# ------------------- دوال اللعبة الأساسية -------------------
 async def lag_team_loop(team_code, key, iv, region):
     global lag_running
     count = 0
@@ -837,7 +1118,7 @@ async def lag_team_loop(team_code, key, iv, region):
 
 # ------------------- الدالة الرئيسية -------------------
 async def MaiiiinE():
-    global key, iv, region  # <-- هذا السطر هو الحل لمشكلة عدم تعريف المتغيرات
+    global key, iv, region
     Uid, Pw = '4378068850', '8C583277F6A0221993BAC8FBBD712BC25B171A445A34FB1DD0966609CB74729D'
 
     open_id, access_token = await GeNeRaTeAccEss(Uid, Pw)
@@ -916,6 +1197,6 @@ async def StarTinG():
             print(f"خطأ في TCP - {e} => إعادة التشغيل ...")
 
 if __name__ == '__main__':
-    # تم تعطيل Insta API لتجنب الأخطاء
+    # تم تعطيل Insta API
     # threading.Thread(target=start_insta_api, daemon=True).start()
     asyncio.run(StarTinG())
