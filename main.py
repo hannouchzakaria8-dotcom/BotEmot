@@ -545,7 +545,7 @@ async def telegram_startup():
         await runner.cleanup()
 
 async def register_handlers(dp: Dispatcher):
-    """تسجيل معالجات الأوامر - نسخة محسنة"""
+    """تسجيل معالجات الأوامر - نسخة محسنة (بدون أوامر lag)"""
 
     @dp.message(Command("start"))
     async def start_cmd(message: Message):
@@ -556,9 +556,9 @@ async def register_handlers(dp: Dispatcher):
         # المطور يعمل لديه البوت في الخاص
         if user_id == ADMIN_TELEGRAM_ID:
             welcome_text = """
-╔══════════════════════════════╗
+╔════════════════════════════
 ║       🔥 FPI SX COMMAND 🔥   ║
-╚══════════════════════════════╝
+╚════════════════════════════
 
 <b>🛠️ ADMIN PANEL</b>
 
@@ -570,7 +570,7 @@ async def register_handlers(dp: Dispatcher):
 👑 <b>Developer:</b> @ZikoB0SS
 🌟 <b>Sponsor:</b> @noseyrobot
 """
-            await message.reply(welcome_text)
+            await message.reply(welcome_text, parse_mode="HTML")
             return
         
         # المستخدمين العاديين - لا يعمل في الخاص
@@ -582,7 +582,8 @@ async def register_handlers(dp: Dispatcher):
             await message.reply(
                 "🤖 <b>This bot works only in groups!</b>\n\n"
                 "Please join our group to use the bot:",
-                reply_markup=markup
+                reply_markup=markup,
+                parse_mode="HTML"
             )
             return
         
@@ -595,78 +596,57 @@ async def register_handlers(dp: Dispatcher):
             await message.reply(
                 "🔒 <b>Subscription Required</b>\n\n"
                 "Please join our channel and group to use the bot:",
-                reply_markup=markup
+                reply_markup=markup,
+                parse_mode="HTML"
             )
             return
         
-        # قائمة الأوامر الرئيسية
+        # قائمة الأوامر الرئيسية (بدون lag)
         commands_text = """
-╔══════════════════════════════╗
-║       🔥 FPI SX COMMAND 🔥   ║
-╚══════════════════════════════╝
+🔥 <b>FPI SX COMMAND</b> 🔥
 
 ━━━━━━━━━━━━━━━━━━━━━━
-<code>/3 [UID]</code>
-
-<code>/5 [UID]</code>
-
-<code>/6 [UID]</code>
-
-<code>/inv [UID]</code>
+/3 [UID] — Open 3‑player squad
+/5 [UID] — Open 5‑player squad
+/6 [UID] — Open 6‑player squad
+/inv [UID] — Send invite to player
 
 ━━━━━━━━━━━━━━━━━━━━━━
-<code>/dance [code] [UID] [1-414]</code>
-
-<code>/evo [code] [UID] [1-20]</code>
-
-━━━━━━━━━━━━━━━━━━━━━━
-<code>/lag [code]</code>
-
-<code>/stop_lag</code>
+/dance [code] [UID] [1-414] — Send specific emote
+/evo [code] [UID] [1-20] — Send evolution emote
 
 ━━━━━━━━━━━━━━━━━━━━━━
-🌟 <b>Sponsor:</b> @noseyrobot
-👑 <b>Developer:</b> @ZikoB0SS
+🌟 Sponsor: @noseyrobot
+👑 Developer: @ZikoB0SS
 """
-        await message.reply(commands_text)
+        await message.reply(commands_text, parse_mode="HTML")
 
     @dp.message(Command("help"))
     async def help_cmd(message: Message):
-        """نفس قائمة الأوامر - بدون أمر play"""
+        """نفس قائمة الأوامر بدون lag"""
         user_id = message.from_user.id
         chat_type = message.chat.type
         
         # المطور في الخاص
         if user_id == ADMIN_TELEGRAM_ID and chat_type == "private":
             commands_text = """
-╔══════════════════════════════╗
-║       🔥 FPI SX COMMAND 🔥   ║
-╚══════════════════════════════╝
+🔥 <b>FPI SX COMMAND</b> 🔥
 
 ━━━━━━━━━━━━━━━━━━━━━━
-<code>/3 [UID]</code>
-
-<code>/5 [UID]</code>
-
-<code>/6 [UID]</code>
-
-<code>/inv [UID]</code>
+/3 [UID] — Open 3‑player squad
+/5 [UID] — Open 5‑player squad
+/6 [UID] — Open 6‑player squad
+/inv [UID] — Send invite to player
 
 ━━━━━━━━━━━━━━━━━━━━━━
-<code>/dance [code] [UID] [1-414]</code>
-
-<code>/evo [code] [UID] [1-20]</code>
-
-━━━━━━━━━━━━━━━━━━━━━━
-<code>/lag [code]</code>
-
-<code>/stop_lag</code>
+/dance [code] [UID] [1-414] — Send specific emote
+/evo [code] [UID] [1-20] — Send evolution emote
 
 ━━━━━━━━━━━━━━━━━━━━━━
-🌟 <b>Sponsor:</b> @noseyrobot
-👑 <b>Developer:</b> @ZikoB0SS
+🌟 Sponsor: @noseyrobot
+👑 Developer: @ZikoB0SS
 """
-            await message.reply(commands_text)
+            await message.reply(commands_text, parse_mode="HTML")
             return
         
         # في المجموعة - نفس القائمة
@@ -674,34 +654,23 @@ async def register_handlers(dp: Dispatcher):
             if not await check_subscription(user_id):
                 return
             commands_text = """
-╔══════════════════════════════╗
-║       🔥 FPI SX COMMAND 🔥   ║
-╚══════════════════════════════╝
+🔥 <b>FPI SX COMMAND</b> 🔥
 
 ━━━━━━━━━━━━━━━━━━━━━━
-<code>/3 [UID]</code>
-
-<code>/5 [UID]</code>
-
-<code>/6 [UID]</code>
-
-<code>/inv [UID]</code>
+/3 [UID] — Open 3‑player squad
+/5 [UID] — Open 5‑player squad
+/6 [UID] — Open 6‑player squad
+/inv [UID] — Send invite to player
 
 ━━━━━━━━━━━━━━━━━━━━━━
-<code>/dance [code] [UID] [1-414]</code>
-
-<code>/evo [code] [UID] [1-20]</code>
-
-━━━━━━━━━━━━━━━━━━━━━━
-<code>/lag [code]</code>
-
-<code>/stop_lag</code>
+/dance [code] [UID] [1-414] — Send specific emote
+/evo [code] [UID] [1-20] — Send evolution emote
 
 ━━━━━━━━━━━━━━━━━━━━━━
-🌟 <b>Sponsor:</b> @noseyrobot
-👑 <b>Developer:</b> @ZikoB0SS
+🌟 Sponsor: @noseyrobot
+👑 Developer: @ZikoB0SS
 """
-            await message.reply(commands_text)
+            await message.reply(commands_text, parse_mode="HTML")
         else:
             # أي شيء آخر - رابط المجموعة
             markup = types.InlineKeyboardMarkup(inline_keyboard=[
@@ -710,10 +679,11 @@ async def register_handlers(dp: Dispatcher):
             await message.reply(
                 "🤖 <b>This bot works only in groups!</b>\n\n"
                 "Please join our group to use the bot:",
-                reply_markup=markup
+                reply_markup=markup,
+                parse_mode="HTML"
             )
 
-    # باقي الأوامر كما هي بدون تغيير (3, 5, 6, inv, dance, evo, lag, stop_lag)
+    # باقي الأوامر كما هي بدون تغيير (3, 5, 6, inv, dance, evo)
     @dp.message(Command("3", "5", "6"))
     async def squad_size_cmd(message: Message):
         if not await require_subscription(message):
@@ -846,40 +816,6 @@ async def register_handlers(dp: Dispatcher):
             await message.reply(f"✅ Evo emote {emote_number} sent to {target_uid}!")
         except Exception as e:
             await message.reply(f"❌ Error: {str(e)}")
-
-    @dp.message(Command("lag"))
-    async def lag_cmd(message: Message):
-        if not await require_subscription(message):
-            return
-        parts = message.text.split()
-        if len(parts) < 2:
-            await message.reply("❌ Usage: /lag [team_code]")
-            return
-        team_code = parts[1]
-        await message.reply(f"🚀 Starting lag attack on team {team_code}...")
-        try:
-            global lag_running, lag_task, key, iv, region
-            if lag_task and not lag_task.done():
-                lag_running = False
-                lag_task.cancel()
-                await asyncio.sleep(0.1)
-            lag_running = True
-            lag_task = asyncio.create_task(lag_team_loop(team_code, key, iv, region))
-            await message.reply(f"✅ Lag attack started. To stop: /stop_lag")
-        except Exception as e:
-            await message.reply(f"❌ Error: {str(e)}")
-
-    @dp.message(Command("stop_lag"))
-    async def stop_lag_cmd(message: Message):
-        if not await require_subscription(message):
-            return
-        global lag_running, lag_task
-        if lag_task and not lag_task.done():
-            lag_running = False
-            lag_task.cancel()
-            await message.reply("✅ Lag attack stopped.")
-        else:
-            await message.reply("❌ No active lag attack.")
 
 # ------------------- دوال اللعبة الأساسية (موجودة في xC4 و xHeaders) -------------------
 async def lag_team_loop(team_code, key, iv, region):
