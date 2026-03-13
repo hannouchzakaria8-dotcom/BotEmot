@@ -740,13 +740,13 @@ async def register_handlers(dp: Dispatcher):
         await message.reply(commands_text, parse_mode="HTML")
 
     @dp.message(Command("help"))
-    async def help_cmd(message: Message):
-        user_id = message.from_user.id
-        chat_type = message.chat.type
-        
-        # المطور في الخاص
-        if user_id == ADMIN_TELEGRAM_ID and chat_type == "private":
-            commands_text = """
+async def help_cmd(message: Message):
+    user_id = message.from_user.id
+    chat_type = message.chat.type
+
+    # --- أولاً: المطور له صلاحية مطلقة في أي مكان (خاص أو مجموعة) ---
+    if user_id == ADMIN_TELEGRAM_ID:
+        commands_text = """
 🔥 <b>FPI SX COMMAND</b> 🔥
 
 ━━━━━━━━━━━━━━━━━━━━━━
@@ -775,14 +775,26 @@ async def register_handlers(dp: Dispatcher):
 🌟 <b>Sponsor:</b> @noseyrobot
 👑 <b>Developer:</b> @ZikoB0SS
 """
-            await message.reply(commands_text, parse_mode="HTML")
+        await message.reply(commands_text, parse_mode="HTML")
+        return
+
+    # --- باقي الكود للمستخدمين العاديين ---
+    if chat_type == "private":
+        markup = types.InlineKeyboardMarkup(inline_keyboard=[
+            [types.InlineKeyboardButton(text="📢 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
+        ])
+        await message.reply(
+            "🤖 <b>This bot works only in groups!</b>\n\n"
+            "Please join our group to use the bot:",
+            reply_markup=markup,
+            parse_mode="HTML"
+        )
+        return
+
+    if chat_type in ["group", "supergroup"]:
+        if not await require_subscription(message):
             return
-        
-        # في المجموعة
-        if chat_type in ["group", "supergroup"]:
-            if not await check_subscription(user_id):
-                return
-            commands_text = """
+        commands_text = """
 🔥 <b>FPI SX COMMAND</b> 🔥
 
 ━━━━━━━━━━━━━━━━━━━━━━
@@ -811,7 +823,7 @@ async def register_handlers(dp: Dispatcher):
 🌟 <b>Sponsor:</b> @noseyrobot
 👑 <b>Developer:</b> @ZikoB0SS
 """
-            await message.reply(commands_text, parse_mode="HTML")
+        await message.reply(commands_text, parse_mode="HTML")
         else:
             # أي شيء آخر - رابط المجموعة
             markup = types.InlineKeyboardMarkup(inline_keyboard=[
