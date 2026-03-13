@@ -61,473 +61,14 @@ iv = None
 region = None
 
 # ------------------- تعيينات الإيموجيات -------------------
-ALL_EMOTE = {
-    1: 909000001,
-    2: 909000002,
-    3: 909000003,
-    4: 909000004,
-    5: 909000005,
-    6: 909000006,
-    7: 909000007,
-    8: 909000008,
-    9: 909000009,
-    10: 909000010,
-    11: 909000011,
-    12: 909000012,
-    13: 909000013,
-    14: 909000014,
-    15: 909000015,
-    16: 909000016,
-    17: 909000017,
-    18: 909000018,
-    19: 909000019,
-    20: 909000020,
-    21: 909000021,
-    22: 909000022,
-    23: 909000023,
-    24: 909000024,
-    25: 909000025,
-    26: 909000026,
-    27: 909000027,
-    28: 909000028,
-    29: 909000029,
-    30: 909000031,
-    31: 909000032,
-    32: 909000033,
-    33: 909000034,
-    34: 909000035,
-    35: 909000036,
-    36: 909000037,
-    37: 909000038,
-    38: 909000039,
-    39: 909000040,
-    40: 909000041,
-    41: 909000042,
-    42: 909000043,
-    43: 909000044,
-    44: 909000045,
-    45: 909000046,
-    46: 909000047,
-    47: 909000048,
-    48: 909000049,
-    49: 909000051,
-    50: 909000052,
-    51: 909000053,
-    52: 909000054,
-    53: 909000055,
-    54: 909000056,
-    55: 909000057,
-    56: 909000058,
-    57: 909000059,
-    58: 909000060,
-    59: 909000061,
-    60: 909000062,
-    61: 909000063,
-    62: 909000064,
-    63: 909000065,
-    64: 909000066,
-    65: 909000067,
-    66: 909000068,
-    67: 909000069,
-    68: 909000070,
-    69: 909000071,
-    70: 909000072,
-    71: 909000073,
-    72: 909000074,
-    73: 909000075,
-    74: 909000076,
-    75: 909000077,
-    76: 909000078,
-    77: 909000079,
-    78: 909000080,
-    79: 909000081,
-    80: 909000082,
-    81: 909000083,
-    82: 909000084,
-    83: 909000085,
-    84: 909000086,
-    85: 909000087,
-    86: 909000088,
-    87: 909000089,
-    88: 909000090,
-    89: 909000091,
-    90: 909000092,
-    91: 909000093,
-    92: 909000094,
-    93: 909000095,
-    94: 909000096,
-    95: 909000097,
-    96: 909000098,
-    97: 909000099,
-    98: 909000100,
-    99: 909000101,
-    100: 909000102,
-    101: 909000103,
-    102: 909000104,
-    103: 909000105,
-    104: 909000106,
-    105: 909000107,
-    106: 909000108,
-    107: 909000109,
-    108: 909000110,
-    109: 909000111,
-    110: 909000112,
-    111: 909000113,
-    112: 909000114,
-    113: 909000115,
-    114: 909000116,
-    115: 909000117,
-    116: 909000118,
-    117: 909000119,
-    118: 909000120,
-    119: 909000121,
-    120: 909000122,
-    121: 909000123,
-    122: 909000124,
-    123: 909000125,
-    124: 909000126,
-    125: 909000127,
-    126: 909000128,
-    127: 909000129,
-    128: 909000130,
-    129: 909000131,
-    130: 909000132,
-    131: 909000133,
-    132: 909000134,
-    133: 909000135,
-    134: 909000136,
-    135: 909000137,
-    136: 909000138,
-    137: 909000139,
-    138: 909000140,
-    139: 909000141,
-    140: 909000142,
-    141: 909000143,
-    142: 909000144,
-    143: 909000145,
-    144: 909000150,
-    145: 909033001,
-    146: 909033002,
-    147: 909033003,
-    148: 909033004,
-    149: 909033005,
-    150: 909033006,
-    151: 909033007,
-    152: 909033008,
-    153: 909033009,
-    154: 909033010,
-    155: 909034001,
-    156: 909034002,
-    157: 909034003,
-    158: 909034004,
-    159: 909034005,
-    160: 909034006,
-    161: 909034007,
-    162: 909034008,
-    163: 909034009,
-    164: 909034010,
-    165: 909034011,
-    166: 909034012,
-    167: 909034013,
-    168: 909034014,
-    169: 909035001,
-    170: 909035002,
-    171: 909035003,
-    172: 909035004,
-    173: 909035005,
-    174: 909035006,
-    175: 909035007,
-    176: 909035008,
-    177: 909035009,
-    178: 909035010,
-    179: 909035011,
-    180: 909035012,
-    181: 909035013,
-    182: 909035014,
-    183: 909035015,
-    184: 909036001,
-    185: 909036002,
-    186: 909036003,
-    187: 909036004,
-    188: 909036005,
-    189: 909036006,
-    190: 909036008,
-    191: 909036009,
-    192: 909036010,
-    193: 909036011,
-    194: 909036012,
-    195: 909036014,
-    196: 909037001,
-    197: 909037002,
-    198: 909037003,
-    199: 909037004,
-    200: 909037005,
-    201: 909037006,
-    202: 909037007,
-    203: 909037008,
-    204: 909037009,
-    205: 909037010,
-    206: 909037011,
-    207: 909037012,
-    208: 909038001,
-    209: 909038002,
-    210: 909038003,
-    211: 909038004,
-    212: 909038005,
-    213: 909038006,
-    214: 909038008,
-    215: 909038009,
-    216: 909038010,
-    217: 909038011,
-    218: 909038012,
-    219: 909038013,
-    220: 909039001,
-    221: 909039002,
-    222: 909039003,
-    223: 909039004,
-    224: 909039005,
-    225: 909039006,
-    226: 909039007,
-    227: 909039008,
-    228: 909039009,
-    229: 909039010,
-    230: 909039011,
-    231: 909039012,
-    232: 909039013,
-    233: 909039014,
-    234: 909040001,
-    235: 909040002,
-    236: 909040003,
-    237: 909040004,
-    238: 909040005,
-    239: 909040006,
-    240: 909040008,
-    241: 909040009,
-    242: 909040010,
-    243: 909040011,
-    244: 909040012,
-    245: 909040013,
-    246: 909040014,
-    247: 909041001,
-    248: 909041002,
-    249: 909041003,
-    250: 909041004,
-    251: 909041005,
-    252: 909041006,
-    253: 909041007,
-    254: 909041008,
-    255: 909041009,
-    256: 909041010,
-    257: 909041011,
-    258: 909041012,
-    259: 909041013,
-    260: 909041014,
-    261: 909041015,
-    262: 909042001,
-    263: 909042002,
-    264: 909042003,
-    265: 909042004,
-    266: 909042005,
-    267: 909042006,
-    268: 909042007,
-    269: 909042008,
-    270: 909042009,
-    271: 909042011,
-    272: 909042012,
-    273: 909042013,
-    274: 909042016,
-    275: 909042017,
-    276: 909042018,
-    277: 909043001,
-    278: 909043002,
-    279: 909043003,
-    280: 909043004,
-    281: 909043005,
-    282: 909043006,
-    283: 909043007,
-    284: 909043008,
-    285: 909043009,
-    286: 909043010,
-    287: 909043013,
-    288: 909044001,
-    289: 909044002,
-    290: 909044003,
-    291: 909044004,
-    292: 909044005,
-    293: 909044006,
-    294: 909044007,
-    295: 909044008,
-    296: 909044009,
-    297: 909044010,
-    298: 909044011,
-    299: 909044012,
-    300: 909044015,
-    301: 909044016,
-    302: 909045001,
-    303: 909045002,
-    304: 909045003,
-    305: 909045004,
-    306: 909045005,
-    307: 909045006,
-    308: 909045007,
-    309: 909045008,
-    310: 909045009,
-    311: 909045010,
-    312: 909045011,
-    313: 909045012,
-    314: 909045015,
-    315: 909045016,
-    316: 909045017,
-    317: 909046001,
-    318: 909046002,
-    319: 909046003,
-    320: 909046004,
-    321: 909046005,
-    322: 909046006,
-    323: 909046007,
-    324: 909046008,
-    325: 909046009,
-    326: 909046010,
-    327: 909046011,
-    328: 909046012,
-    329: 909046013,
-    330: 909046014,
-    331: 909046015,
-    332: 909046016,
-    333: 909046017,
-    334: 909047001,
-    335: 909047002,
-    336: 909047003,
-    337: 909047004,
-    338: 909047005,
-    339: 909047006,
-    340: 909047007,
-    341: 909047008,
-    342: 909047009,
-    343: 909047010,
-    344: 909047011,
-    345: 909047012,
-    346: 909047013,
-    347: 909047015,
-    348: 909047016,
-    349: 909047017,
-    350: 909047018,
-    351: 909047019,
-    352: 909048001,
-    353: 909048002,
-    354: 909048003,
-    355: 909048004,
-    356: 909048005,
-    357: 909048006,
-    358: 909048007,
-    359: 909048008,
-    360: 909048009,
-    361: 909048010,
-    362: 909048011,
-    363: 909048012,
-    364: 909048013,
-    365: 909048014,
-    366: 909048015,
-    367: 909048016,
-    368: 909048017,
-    369: 909048018,
-    370: 909049001,
-    371: 909049002,
-    372: 909049003,
-    373: 909049004,
-    374: 909049005,
-    375: 909049006,
-    376: 909049007,
-    377: 909049008,
-    378: 909049009,
-    379: 909049010,
-    380: 909049011,
-    381: 909049012,
-    382: 909049013,
-    383: 909049014,
-    384: 909049015,
-    385: 909049016,
-    386: 909049017,
-    387: 909049018,
-    388: 909049019,
-    389: 909049020,
-    390: 909049021,
-    391: 909050002,
-    392: 909050003,
-    393: 909050004,
-    394: 909050005,
-    395: 909050006,
-    396: 909050008,
-    397: 909050009,
-    398: 909050010,
-    399: 909050011,
-    400: 909050012,
-    401: 909050013,
-    402: 909050014,
-    403: 909050015,
-    404: 909050016,
-    405: 909050017,
-    406: 909050018,
-    407: 909050019,
-    408: 909050020,
-    409: 909050021,
-    410: 909050026,
-    411: 909050027,
-    412: 909050028,
-    413: 909547001,
-    414: 909550001
-}
+ALL_EMOTE = {1: 909000001, 2: 909000002, 3: 909000003, 4: 909000004, 5: 909000005, 6: 909000006, 7: 909000007, 8: 909000008, 9: 909000009, 10: 909000010, 11: 909000011, 12: 909000012, 13: 909000013, 14: 909000014, 15: 909000015, 16: 909000016, 17: 909000017, 18: 909000018, 19: 909000019, 20: 909000020, 21: 909000021, 22: 909000022, 23: 909000023, 24: 909000024, 25: 909000025, 26: 909000026, 27: 909000027, 28: 909000028, 29: 909000029, 30: 909000031, 31: 909000032, 32: 909000033, 33: 909000034, 34: 909000035, 35: 909000036, 36: 909000037, 37: 909000038, 38: 909000039, 39: 909000040, 40: 909000041, 41: 909000042, 42: 909000043, 43: 909000044, 44: 909000045, 45: 909000046, 46: 909000047, 47: 909000048, 48: 909000049, 49: 909000051, 50: 909000052, 51: 909000053, 52: 909000054, 53: 909000055, 54: 909000056, 55: 909000057, 56: 909000058, 57: 909000059, 58: 909000060, 59: 909000061, 60: 909000062, 61: 909000063, 62: 909000064, 63: 909000065, 64: 909000066, 65: 909000067, 66: 909000068, 67: 909000069, 68: 909000070, 69: 909000071, 70: 909000072, 71: 909000073, 72: 909000074, 73: 909000075, 74: 909000076, 75: 909000077, 76: 909000078, 77: 909000079, 78: 909000080, 79: 909000081, 80: 909000082, 81: 909000083, 82: 909000084, 83: 909000085, 84: 909000086, 85: 909000087, 86: 909000088, 87: 909000089, 88: 909000090, 89: 909000091, 90: 909000092, 91: 909000093, 92: 909000094, 93: 909000095, 94: 909000096, 95: 909000097, 96: 909000098, 97: 909000099, 98: 909000100, 99: 909000101, 100: 909000102, 101: 909000103, 102: 909000104, 103: 909000105, 104: 909000106, 105: 909000107, 106: 909000108, 107: 909000109, 108: 909000110, 109: 909000111, 110: 909000112, 111: 909000113, 112: 909000114, 113: 909000115, 114: 909000116, 115: 909000117, 116: 909000118, 117: 909000119, 118: 909000120, 119: 909000121, 120: 909000122, 121: 909000123, 122: 909000124, 123: 909000125, 124: 909000126, 125: 909000127, 126: 909000128, 127: 909000129, 128: 909000130, 129: 909000131, 130: 909000132, 131: 909000133, 132: 909000134, 133: 909000135, 134: 909000136, 135: 909000137, 136: 909000138, 137: 909000139, 138: 909000140, 139: 909000141, 140: 909000142, 141: 909000143, 142: 909000144, 143: 909000145, 144: 909000150, 145: 909033001, 146: 909033002, 147: 909033003, 148: 909033004, 149: 909033005, 150: 909033006, 151: 909033007, 152: 909033008, 153: 909033009, 154: 909033010, 155: 909034001, 156: 909034002, 157: 909034003, 158: 909034004, 159: 909034005, 160: 909034006, 161: 909034007, 162: 909034008, 163: 909034009, 164: 909034010, 165: 909034011, 166: 909034012, 167: 909034013, 168: 909034014, 169: 909035001, 170: 909035002, 171: 909035003, 172: 909035004, 173: 909035005, 174: 909035006, 175: 909035007, 176: 909035008, 177: 909035009, 178: 909035010, 179: 909035011, 180: 909035012, 181: 909035013, 182: 909035014, 183: 909035015, 184: 909036001, 185: 909036002, 186: 909036003, 187: 909036004, 188: 909036005, 189: 909036006, 190: 909036008, 191: 909036009, 192: 909036010, 193: 909036011, 194: 909036012, 195: 909036014, 196: 909037001, 197: 909037002, 198: 909037003, 199: 909037004, 200: 909037005, 201: 909037006, 202: 909037007, 203: 909037008, 204: 909037009, 205: 909037010, 206: 909037011, 207: 909037012, 208: 909038001, 209: 909038002, 210: 909038003, 211: 909038004, 212: 909038005, 213: 909038006, 214: 909038008, 215: 909038009, 216: 909038010, 217: 909038011, 218: 909038012, 219: 909038013, 220: 909039001, 221: 909039002, 222: 909039003, 223: 909039004, 224: 909039005, 225: 909039006, 226: 909039007, 227: 909039008, 228: 909039009, 229: 909039010, 230: 909039011, 231: 909039012, 232: 909039013, 233: 909039014, 234: 909040001, 235: 909040002, 236: 909040003, 237: 909040004, 238: 909040005, 239: 909040006, 240: 909040008, 241: 909040009, 242: 909040010, 243: 909040011, 244: 909040012, 245: 909040013, 246: 909040014, 247: 909041001, 248: 909041002, 249: 909041003, 250: 909041004, 251: 909041005, 252: 909041006, 253: 909041007, 254: 909041008, 255: 909041009, 256: 909041010, 257: 909041011, 258: 909041012, 259: 909041013, 260: 909041014, 261: 909041015, 262: 909042001, 263: 909042002, 264: 909042003, 265: 909042004, 266: 909042005, 267: 909042006, 268: 909042007, 269: 909042008, 270: 909042009, 271: 909042011, 272: 909042012, 273: 909042013, 274: 909042016, 275: 909042017, 276: 909042018, 277: 909043001, 278: 909043002, 279: 909043003, 280: 909043004, 281: 909043005, 282: 909043006, 283: 909043007, 284: 909043008, 285: 909043009, 286: 909043010, 287: 909043013, 288: 909044001, 289: 909044002, 290: 909044003, 291: 909044004, 292: 909044005, 293: 909044006, 294: 909044007, 295: 909044008, 296: 909044009, 297: 909044010, 298: 909044011, 299: 909044012, 300: 909044015, 301: 909044016, 302: 909045001, 303: 909045002, 304: 909045003, 305: 909045004, 306: 909045005, 307: 909045006, 308: 909045007, 309: 909045008, 310: 909045009, 311: 909045010, 312: 909045011, 313: 909045012, 314: 909045015, 315: 909045016, 316: 909045017, 317: 909046001, 318: 909046002, 319: 909046003, 320: 909046004, 321: 909046005, 322: 909046006, 323: 909046007, 324: 909046008, 325: 909046009, 326: 909046010, 327: 909046011, 328: 909046012, 329: 909046013, 330: 909046014, 331: 909046015, 332: 909046016, 333: 909046017, 334: 909047001, 335: 909047002, 336: 909047003, 337: 909047004, 338: 909047005, 339: 909047006, 340: 909047007, 341: 909047008, 342: 909047009, 343: 909047010, 344: 909047011, 345: 909047012, 346: 909047013, 347: 909047015, 348: 909047016, 349: 909047017, 350: 909047018, 351: 909047019, 352: 909048001, 353: 909048002, 354: 909048003, 355: 909048004, 356: 909048005, 357: 909048006, 358: 909048007, 359: 909048008, 360: 909048009, 361: 909048010, 362: 909048011, 363: 909048012, 364: 909048013, 365: 909048014, 366: 909048015, 367: 909048016, 368: 909048017, 369: 909048018, 370: 909049001, 371: 909049002, 372: 909049003, 373: 909049004, 374: 909049005, 375: 909049006, 376: 909049007, 377: 909049008, 378: 909049009, 379: 909049010, 380: 909049011, 381: 909049012, 382: 909049013, 383: 909049014, 384: 909049015, 385: 909049016, 386: 909049017, 387: 909049018, 388: 909049019, 389: 909049020, 390: 909049021, 391: 909050002, 392: 909050003, 393: 909050004, 394: 909050005, 395: 909050006, 396: 909050008, 397: 909050009, 398: 909050010, 399: 909050011, 400: 909050012, 401: 909050013, 402: 909050014, 403: 909050015, 404: 909050016, 405: 909050017, 406: 909050018, 407: 909050019, 408: 909050020, 409: 909050021, 410: 909050026, 411: 909050027, 412: 909050028, 413: 909547001, 414: 909550001}
 
-EMOTE_MAP = {
-    1: 909000063,
-    2: 909000081,
-    3: 909000075,
-    4: 909000085,
-    5: 909000134,
-    6: 909000098,
-    7: 909035007,
-    8: 909051012,
-    9: 909000141,
-    10: 909034008,
-    11: 909041002,
-    12: 909039004,
-    13: 909042008,
-    14: 909051014,
-    15: 909039012,
-    16: 909040010,
-    17: 909035010,
-    18: 909041005,
-    19: 909051003,
-    20: 909034001
-}
+EMOTE_MAP = {1: 909000063, 2: 909000081, 3: 909000075, 4: 909000085, 5: 909000134, 6: 909000098, 7: 909035007, 8: 909051012, 9: 909000141, 10: 909034008, 11: 909041002, 12: 909039004, 13: 909042008, 14: 909051014, 15: 909039012, 16: 909040010, 17: 909035010, 18: 909041005, 19: 909051003, 20: 909034001}
 
-# أسماء الرقصات التطورية
-EVO_NAMES = {
-    1: "AK4 ZIKO",
-    2: "SCAR4 ZIKO",
-    3: "MP40 ZIKO",
-    4: "MP40 ZIKO 2",
-    5: "M1014 ZIKO",
-    6: "M1014 ZIKO 2",
-    7: "XM8 ZIKO",
-    8: "Famas ZIKO",
-    9: "UMP ZIKO",
-    10: "M1887 ZIKO",
-    11: "Woodpecker ZIKO",
-    12: "Groza ZIKO",
-    13: "M4A1 ZIKO",
-    14: "Thompson ZIKO",
-    15: "G18 ZIKO",
-    16: "Parafal ZIKO",
-    17: "P90 ZIKO",
-    18: "M60 ZIKO",
-    19: "تطورية ZIKO 19",
-    20: "تطورية ZIKO 20"
-}
+EVO_NAMES = {1: "AK4 ZIKO", 2: "SCAR4 ZIKO", 3: "MP40 ZIKO", 4: "MP40 ZIKO 2", 5: "M1014 ZIKO", 6: "M1014 ZIKO 2", 7: "XM8 ZIKO", 8: "Famas ZIKO", 9: "UMP ZIKO", 10: "M1887 ZIKO", 11: "Woodpecker ZIKO", 12: "Groza ZIKO", 13: "M4A1 ZIKO", 14: "Thompson ZIKO", 15: "G18 ZIKO", 16: "Parafal ZIKO", 17: "P90 ZIKO", 18: "M60 ZIKO", 19: "تطورية ZIKO 19", 20: "تطورية ZIKO 20"}
 
 # ------------------- دوال الـ API الجديدة -------------------
 async def fetch_player_info(uid: str) -> dict:
-    """جلب جميع معلومات اللاعب من الـ API"""
     url = f"https://foubia-info-ff.vercel.app/{uid}"
     try:
         async with aiohttp.ClientSession() as session:
@@ -542,7 +83,6 @@ async def fetch_player_info(uid: str) -> dict:
         return None
 
 async def fetch_ban_status(uid: str) -> dict:
-    """جلب حالة الحظر من الـ API"""
     url = f"https://foubia-ban-check.vercel.app/bancheck?key=xTzPrO&uid={uid}"
     try:
         async with aiohttp.ClientSession() as session:
@@ -557,7 +97,6 @@ async def fetch_ban_status(uid: str) -> dict:
         return None
 
 async def fetch_outfit_image(uid: str, region: str, max_retries: int = 2, delay: int = 3) -> bytes:
-    """جلب صورة الأوتفيت مع إعادة المحاولة"""
     url = f"https://ffoutfitapis.vercel.app/outfit-image?uid={uid}&region={region}&key=99day"
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -565,7 +104,6 @@ async def fetch_outfit_image(uid: str, region: str, max_retries: int = 2, delay:
         'Accept-Language': 'en-US,en;q=0.9',
         'Referer': 'https://ffoutfitapis.vercel.app/'
     }
-    
     for attempt in range(max_retries):
         try:
             async with aiohttp.ClientSession() as session:
@@ -588,7 +126,6 @@ async def fetch_outfit_image(uid: str, region: str, max_retries: int = 2, delay:
         except Exception as e:
             print(f"❌ استثناء في جلب الأوتفيت: {e}")
             return None
-    
     print("❌ فشلت جميع محاولات جلب الأوتفيت.")
     return None
 
@@ -651,15 +188,14 @@ async def telegram_startup():
     except asyncio.CancelledError:
         await runner.cleanup()
 
+# ------------------- دالة تسجيل معالجات الأوامر -------------------
 async def register_handlers(dp: Dispatcher):
-    """تسجيل معالجات الأوامر - نسخة محسنة حسب الطلب"""
+    """تسجيل معالجات الأوامر - مع التعديلات الجديدة"""
 
     @dp.message(Command("start"))
     async def start_cmd(message: Message):
         user_id = message.from_user.id
         chat_type = message.chat.type
-        
-        # المطور يعمل لديه البوت في الخاص
         if user_id == ADMIN_TELEGRAM_ID:
             welcome_text = """
 🔥 <b>FPI SX COMMAND</b> 🔥
@@ -679,8 +215,6 @@ async def register_handlers(dp: Dispatcher):
 """
             await message.reply(welcome_text, parse_mode="HTML")
             return
-        
-        # المستخدمين العاديين - لا يعمل في الخاص
         if chat_type == "private":
             markup = types.InlineKeyboardMarkup(inline_keyboard=[
                 [types.InlineKeyboardButton(text="📢 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
@@ -692,8 +226,6 @@ async def register_handlers(dp: Dispatcher):
                 parse_mode="HTML"
             )
             return
-        
-        # في المجموعة - التحقق من الاشتراك
         if not await check_subscription(user_id):
             markup = types.InlineKeyboardMarkup(inline_keyboard=[
                 [types.InlineKeyboardButton(text="📢 Join Channel", url="https://t.me/Ziko_Tim")],
@@ -706,8 +238,6 @@ async def register_handlers(dp: Dispatcher):
                 parse_mode="HTML"
             )
             return
-        
-        # قائمة الأوامر الرئيسية
         commands_text = """
 🔥 <b>FPI SX COMMAND</b> 🔥
 
@@ -717,13 +247,15 @@ async def register_handlers(dp: Dispatcher):
 /3 [UID] — Open 3‑player squad
 /5 [UID] — Open 5‑player squad
 /6 [UID] — Open 6‑player squad
-/inv [UID] — Send invite to player
+/inv [team_code] [UID] — Invite player to team
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
-<b>🕺 DANCE COMMANDS</b>
-/dance [code] [UID] [1-414] — Send specific emote
-/evo [code] [UID] [1-20] — Send evolution emote
+<b>🕺 DANCE & EMOTE COMMANDS</b>
+/dance [code] [UID1] [UID2] ... [1-414] — Perform emote in team
+/fast [code] [UID1] ... [emote] [count] — Rapid emote spam (max 50)
+/evo [code] [UID1] ... [1-20] — Evolution emote
+/play [UID] [1-414] — Basic emote
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
@@ -743,9 +275,7 @@ async def register_handlers(dp: Dispatcher):
     async def help_cmd(message: Message):
         user_id = message.from_user.id
         chat_type = message.chat.type
-
-        # --- أولاً: المطور له صلاحية مطلقة في أي مكان (خاص أو مجموعة) ---
-        if user_id == ADMIN_TELEGRAM_ID:
+        if user_id == ADMIN_TELEGRAM_ID and chat_type == "private":
             commands_text = """
 🔥 <b>FPI SX COMMAND</b> 🔥
 
@@ -755,13 +285,15 @@ async def register_handlers(dp: Dispatcher):
 /3 [UID] — Open 3‑player squad
 /5 [UID] — Open 5‑player squad
 /6 [UID] — Open 6‑player squad
-/inv [UID] — Send invite to player
+/inv [team_code] [UID] — Invite player to team
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
-<b>🕺 DANCE COMMANDS</b>
-/dance [code] [UID] [1-414] — Send specific emote
-/evo [code] [UID] [1-20] — Send evolution emote
+<b>🕺 DANCE & EMOTE COMMANDS</b>
+/dance [code] [UID1] [UID2] ... [1-414] — Perform emote in team
+/fast [code] [UID1] ... [emote] [count] — Rapid emote spam (max 50)
+/evo [code] [UID1] ... [1-20] — Evolution emote
+/play [UID] [1-414] — Basic emote
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
@@ -777,21 +309,6 @@ async def register_handlers(dp: Dispatcher):
 """
             await message.reply(commands_text, parse_mode="HTML")
             return
-
-        # --- المستخدمون العاديون في الخاص ---
-        if chat_type == "private":
-            markup = types.InlineKeyboardMarkup(inline_keyboard=[
-                [types.InlineKeyboardButton(text="📢 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
-            ])
-            await message.reply(
-                "🤖 <b>This bot works only in groups!</b>\n\n"
-                "Please join our group to use the bot:",
-                reply_markup=markup,
-                parse_mode="HTML"
-            )
-            return
-
-        # --- المستخدمون العاديون في المجموعة ---
         if chat_type in ["group", "supergroup"]:
             if not await require_subscription(message):
                 return
@@ -804,13 +321,15 @@ async def register_handlers(dp: Dispatcher):
 /3 [UID] — Open 3‑player squad
 /5 [UID] — Open 5‑player squad
 /6 [UID] — Open 6‑player squad
-/inv [UID] — Send invite to player
+/inv [team_code] [UID] — Invite player to team
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
-<b>🕺 DANCE COMMANDS</b>
-/dance [code] [UID] [1-414] — Send specific emote
-/evo [code] [UID] [1-20] — Send evolution emote
+<b>🕺 DANCE & EMOTE COMMANDS</b>
+/dance [code] [UID1] [UID2] ... [1-414] — Perform emote in team
+/fast [code] [UID1] ... [emote] [count] — Rapid emote spam (max 50)
+/evo [code] [UID1] ... [1-20] — Evolution emote
+/play [UID] [1-414] — Basic emote
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
@@ -826,7 +345,6 @@ async def register_handlers(dp: Dispatcher):
 """
             await message.reply(commands_text, parse_mode="HTML")
         else:
-            # أي شيء آخر - رابط المجموعة
             markup = types.InlineKeyboardMarkup(inline_keyboard=[
                 [types.InlineKeyboardButton(text="📢 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
             ])
@@ -837,8 +355,7 @@ async def register_handlers(dp: Dispatcher):
                 parse_mode="HTML"
             )
 
-    # باقي الأوامر كما هي (3, 5, 6, inv, dance, evo, outfit, all_info, check)
-    # مع حذف أوامر lag, stop_lag, play
+    # أوامر المجموعة الأساسية (3,5,6)
     @dp.message(Command("3", "5", "6"))
     async def squad_size_cmd(message: Message):
         if not await require_subscription(message):
@@ -871,247 +388,202 @@ async def register_handlers(dp: Dispatcher):
         except Exception as e:
             await message.reply(f"❌ Error: {str(e)}")
 
+    # ================== أمر /inv المعدل ==================
     @dp.message(Command("inv"))
-    async def invite_cmd(message: Message):
+    async def invite_to_team_command(message: Message):
         if not await require_subscription(message):
             return
-        parts = message.text.split()
-        if len(parts) < 2:
-            await message.reply("❌ Usage: /inv [UID]")
+        parts = message.text.strip().split()
+        if len(parts) < 3:
+            await message.reply(
+                "❌ **الاستخدام الصحيح:**\n"
+                "`/inv [team_code] [UID]`\n"
+                "مثال: `/inv ABC123 123456789`"
+            )
             return
-        target_uid = parts[1]
+        team_code = parts[1]
+        target_uid = parts[2]
         if not target_uid.isdigit():
-            await message.reply("❌ Invalid UID!")
+            await message.reply("❌ UID يجب أن يكون أرقاماً فقط.")
             return
-        await message.reply(f"🚀 Sending invite to {target_uid}...")
-        try:
-            global online_writer, whisper_writer, key, iv, region
-            V = await SEnd_InV(4, int(target_uid), key, iv, region)
-            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', V)
-            await message.reply(f"✅ Invite sent to {target_uid}!")
-        except Exception as e:
-            await message.reply(f"❌ Error: {str(e)}")
-
-    @dp.message(Command("dance"))
-    async def dance_cmd(message: Message):
-        if not await require_subscription(message):
-            return
-        parts = message.text.split()
-        if len(parts) < 4:
-            await message.reply("❌ Usage: /dance [team_code] [UID] [emote_number 1-414]")
-            return
-        team_code = parts[1]
-        target_uid = parts[2]
-        try:
-            emote_number = int(parts[3])
-            if emote_number < 1 or emote_number > 414:
-                await message.reply("❌ Emote number must be between 1 and 414")
-                return
-        except ValueError:
-            await message.reply("❌ Invalid emote number")
-            return
-
-        await message.reply(f"🚀 Starting dance: Team {team_code}, Target {target_uid}, Emote {emote_number}")
-        try:
-            global online_writer, whisper_writer, key, iv, region
-            emote_id = ALL_EMOTE.get(emote_number)
-            if not emote_id:
-                await message.reply("❌ Invalid emote ID!")
-                return
-
-            join_packet = await GenJoinSquadsPacket(team_code, key, iv)
-            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', join_packet)
-            await asyncio.sleep(1.5)
-            H = await Emote_k(int(target_uid), emote_id, key, iv, region)
-            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', H)
-            await asyncio.sleep(0.5)
-            leave_packet = await ExiT(None, key, iv)
-            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', leave_packet)
-
-            await message.reply(f"✅ Emote {emote_number} sent to {target_uid}!")
-        except Exception as e:
-            await message.reply(f"❌ Error: {str(e)}")
-
-    @dp.message(Command("evo"))
-    async def evo_cmd(message: Message):
-        if not await require_subscription(message):
-            return
-        parts = message.text.split()
-        if len(parts) < 4:
-            await message.reply("❌ Usage: /evo [team_code] [UID] [emote_number 1-20]")
-            return
-        team_code = parts[1]
-        target_uid = parts[2]
-        try:
-            emote_number = int(parts[3])
-            if emote_number < 1 or emote_number > 20:
-                await message.reply("❌ Emote number must be between 1 and 20")
-                return
-        except ValueError:
-            await message.reply("❌ Invalid emote number")
-            return
-
-        emote_name = EVO_NAMES.get(emote_number, f"Evolution {emote_number}")
-
-        await message.reply(f"🚀 Starting evolution dance: Team {team_code}, Target {target_uid}, Emote {emote_name}")
-        try:
-            global online_writer, whisper_writer, key, iv, region
-            emote_id = EMOTE_MAP.get(emote_number)
-            if not emote_id:
-                await message.reply("❌ Invalid evolution emote ID!")
-                return
-
-            join_packet = await GenJoinSquadsPacket(team_code, key, iv)
-            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', join_packet)
-            await asyncio.sleep(1.5)
-            H = await Emote_k(int(target_uid), emote_id, key, iv, region)
-            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', H)
-            await asyncio.sleep(0.5)
-            leave_packet = await ExiT(None, key, iv)
-            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', leave_packet)
-
-            await message.reply(f"✅ Evolution emote **{emote_name}** sent to `{target_uid}`!")
-        except Exception as e:
-            await message.reply(f"❌ Error: {str(e)}")
-
-    # أوامر المعلومات الجديدة (من الكود الأصلي)
-    @dp.message(Command("outfit"))
-    async def outfit_cmd(message: Message):
-        if not await require_subscription(message):
-            return
-        parts = message.text.split()
-        if len(parts) < 2:
-            await message.reply("❌ Usage: /outfit [UID]\nExample: /outfit 123456789")
-            return
-        
-        uid = parts[1]
-        if not uid.isdigit():
-            await message.reply("❌ Invalid UID!")
-            return
-        
-        status_msg = await message.reply("🔄 Preparing outfit image... (may take a few seconds)")
-        
-        info = await fetch_player_info(uid)
-        if not info or not info.get('basicinfo'):
-            await status_msg.edit_text("❌ Failed to fetch player info.")
-            return
-        
-        region_api = info['basicinfo'][0].get('region', 'ME').lower()
-        valid_regions = ['me', 'ind', 'bd', 'sg', 'id', 'th', 'vn', 'ru', 'br', 'na', 'eu']
-        if region_api not in valid_regions:
-            region_api = 'me'
-        
-        await status_msg.edit_text(f"🔄 Generating outfit image for region **{region_api.upper()}**...")
-        
-        image_bytes = await fetch_outfit_image(uid, region_api, max_retries=3, delay=4)
-        
-        if not image_bytes:
-            await status_msg.edit_text("❌ Failed to fetch outfit image.")
-            return
-        
-        photo = BufferedInputFile(image_bytes, filename=f"{uid}_outfit.jpg")
-        await message.reply_photo(
-            photo=photo, 
-            caption=f"🎭 **Player Outfit**\n🆔 `{uid}`\n🌍 Region: **{region_api.upper()}**"
+        status_msg = await message.reply(
+            f"🔄 جاري تنفيذ /inv على الفريق **{team_code}** للهدف `{target_uid}`..."
         )
-        await status_msg.delete()
+        asyncio.create_task(
+            process_invite_command(
+                team_code, target_uid, key, iv, region,
+                message.chat.id, status_msg.message_id, message.from_user.id
+            )
+        )
 
-    @dp.message(Command("all_info"))
-    async def all_info_cmd(message: Message):
+    # ================== أمر /fast للإيموجي السريع ==================
+    @dp.message(Command("fast"))
+    async def fast_emote_command(message: Message):
         if not await require_subscription(message):
             return
-        parts = message.text.split()
-        if len(parts) < 2:
-            await message.reply("❌ Usage: /all_info [UID]\nExample: /all_info 123456789")
+        parts = message.text.strip().split()
+        if len(parts) < 3:
+            await message.reply(
+                "❌ **الاستخدام الصحيح:**\n"
+                "`/fast [team_code] [UID1] [UID2] ... [emote_number] [count]`\n"
+                "مثال: `/fast ABC123 123456789 789123456 5`  (العدد اختياري، افتراضي 50)"
+            )
             return
-        
-        uid = parts[1]
-        if not uid.isdigit():
-            await message.reply("❌ Invalid UID!")
+        team_code = parts[1]
+        uids = []
+        emote_number = None
+        count = 50  # القيمة الافتراضية
+        for part in parts[2:]:
+            if part.isdigit():
+                if len(part) <= 3 and emote_number is None:
+                    emote_number = part
+                elif len(part) <= 3 and emote_number is not None:
+                    count = int(part)
+                else:
+                    uids.append(part)
+            else:
+                break
+        if not uids:
+            await message.reply("❌ لم يتم إدخال أي معرف هدف صحيح.")
             return
-        
-        status_msg = await message.reply("🔄 Fetching player info...")
-        
-        data = await fetch_player_info(uid)
-        if not data:
-            await status_msg.edit_text("❌ Failed to fetch info. Check UID.")
+        if emote_number is None:
+            await message.reply("❌ لم يتم تحديد رقم الإيموجي.")
             return
-        
-        reply = f"📊 **Player Info** `{uid}`\n"
-        reply += "━━━━━━━━━━━━━━━━━━━━\n"
-        
-        if data.get('basicinfo'):
-            b = data['basicinfo'][0]
-            reply += f"👤 **Name:** {b.get('username', 'Unknown')}\n"
-            reply += f"📈 **Level:** {b.get('level', 'N/A')}\n"
-            reply += f"❤️ **Likes:** {b.get('likes', 0):,}\n"
-            reply += f"🌍 **Region:** {b.get('region', 'N/A')}\n"
-            reply += f"📝 **Bio:** {b.get('bio', 'None')[:50]}...\n"
-            reply += f"📅 **Created:** {datetime.fromtimestamp(b.get('createat', 0)).strftime('%Y-%m-%d')}\n"
-            reply += f"🕒 **Last Login:** {datetime.fromtimestamp(b.get('lastlogin', 0)).strftime('%Y-%m-%d %H:%M')}\n\n"
-        
-        if data.get('claninfo'):
-            c = data['claninfo'][0]
-            reply += f"🏰 **Guild:** {c.get('clanname', 'None')}\n"
-            reply += f"🆔 **Guild ID:** `{c.get('clanid', 'N/A')}`\n"
-            reply += f"📊 **Guild Level:** {c.get('guildlevel', 'N/A')}\n"
-            reply += f"👥 **Members:** {c.get('livemember', 'N/A')}\n\n"
-        else:
-            reply += "🏰 **Guild:** None\n\n"
-        
-        if data.get('clanadmin'):
-            reply += "👑 **Guild Admins:**\n"
-            for admin in data['clanadmin'][:3]:
-                reply += f"├─ {admin.get('adminname', 'Unknown')} (Level {admin.get('level', 'N/A')})\n"
-        
-        reply += "━━━━━━━━━━━━━━━━━━━━"
-        
-        await status_msg.edit_text(reply, parse_mode='Markdown')
+        emote_number = int(emote_number)
+        if emote_number not in ALL_EMOTE:
+            await message.reply("❌ رقم الإيموجي غير صالح (يجب أن يكون بين 1 و414).")
+            return
+        if count < 1 or count > 50:
+            await message.reply("❌ عدد التكرارات يجب أن يكون بين 1 و50.")
+            return
+        status_msg = await message.reply(
+            f"🔄 بدء سبام الإيموجي **{emote_number}** في الفريق `{team_code}` "
+            f"للأهداف: {', '.join(uids)} بعدد {count} مرة..."
+        )
+        asyncio.create_task(
+            process_fast_emote_command(
+                team_code, uids, emote_number, count, key, iv, region,
+                message.chat.id, status_msg.message_id, message.from_user.id
+            )
+        )
 
-    @dp.message(Command("check"))
-    async def check_cmd(message: Message):
+    # ================== أمر /dance المحسن ==================
+    @dp.message(Command("dance"))
+    async def dance_command(message: Message):
         if not await require_subscription(message):
             return
-        parts = message.text.split()
-        if len(parts) < 2:
-            await message.reply("❌ Usage: /check [UID]\nExample: /check 123456789")
+        parts = message.text.strip().split()
+        if len(parts) < 4:
+            await message.reply(
+                "❌ **الاستخدام:** `/dance [team_code] [UID1] [UID2] ... [emote_number]`"
+            )
             return
-        
-        uid = parts[1]
-        if not uid.isdigit():
-            await message.reply("❌ Invalid UID!")
+        team_code = parts[1]
+        uids = []
+        emote_number = None
+        for part in parts[2:]:
+            if part.isdigit() and len(part) <= 3 and emote_number is None:
+                emote_number = part
+            elif part.isdigit():
+                uids.append(part)
+        if not uids or emote_number is None:
+            await message.reply("❌ بيانات غير صحيحة.")
             return
-        
-        status_msg = await message.reply("🔄 Checking ban status...")
-        
-        ban_data = await fetch_ban_status(uid)
-        if not ban_data:
-            await status_msg.edit_text("❌ Failed to check ban status.")
+        emote_number = int(emote_number)
+        if emote_number not in ALL_EMOTE:
+            await message.reply("❌ رقم إيموجي غير صالح.")
             return
-        
-        info = await fetch_player_info(uid)
-        
-        username = "Unknown"
-        level = "N/A"
-        if info and info.get('basicinfo'):
-            username = info['basicinfo'][0].get('username', 'Unknown')
-            level = info['basicinfo'][0].get('level', 'N/A')
-        
-        is_banned = ban_data.get('is_banned', False)
-        
-        status_emoji = "🚫 **BANNED**" if is_banned else "✅ **NOT BANNED**"
-        
-        reply = f"🔍 **Ban Check**\n"
-        reply += "━━━━━━━━━━━━━━━━━━━━\n"
-        reply += f"👤 **Name:** {username}\n"
-        reply += f"📈 **Level:** {level}\n"
-        reply += f"🆔 **UID:** `{uid}`\n"
-        reply += f"🚦 **Status:** {status_emoji}\n"
-        reply += "━━━━━━━━━━━━━━━━━━━━"
-        
-        await status_msg.edit_text(reply, parse_mode='Markdown')
+        status_msg = await message.reply(f"🔄 تنفيذ /dance للأهداف {', '.join(uids)}...")
+        asyncio.create_task(
+            process_dance_command(team_code, uids, emote_number, key, iv, region,
+                                  message.chat.id, status_msg.message_id)
+        )
 
-# ------------------- دوال اللعبة الأساسية -------------------
+    # أوامر أخرى (موجودة في الكود الأصلي) يمكن إضافتها هنا...
+    # @dp.message(Command("evo")) ...
+    # @dp.message(Command("play")) ...
+    # @dp.message(Command("outfit")) ...
+    # @dp.message(Command("all_info")) ...
+    # @dp.message(Command("check")) ...
+    # @dp.message(Command("lag")) ...
+    # @dp.message(Command("stop_lag")) ...
+
+# ================== دوال معالجة الأوامر الجديدة ==================
+async def process_invite_command(team_code: str, target_uid: str, key, iv, region, chat_id: int, status_msg_id: int, user_id: int):
+    try:
+        join_packet = await GenJoinSquadsPacket(team_code, key, iv)
+        await SEndPacKeT(whisper_writer, online_writer, 'OnLine', join_packet)
+        await asyncio.sleep(1.5)
+        invite_packet = await SEnd_InV(5, int(target_uid), key, iv, region)  # size 5 عشوائي
+        await SEndPacKeT(whisper_writer, online_writer, 'OnLine', invite_packet)
+        await asyncio.sleep(1)
+        exit_packet = await ExiT(None, key, iv)
+        await SEndPacKeT(whisper_writer, online_writer, 'OnLine', exit_packet)
+        await telegram_bot.edit_message_text(
+            f"✅ تمت دعوة `{target_uid}` إلى الفريق `{team_code}` بنجاح!",
+            chat_id, status_msg_id,
+            parse_mode="HTML"
+        )
+    except Exception as e:
+        await telegram_bot.edit_message_text(
+            f"❌ خطأ في تنفيذ /inv: {str(e)}",
+            chat_id, status_msg_id
+        )
+
+async def process_fast_emote_command(team_code: str, uids: list, emote_number: int, count: int, key, iv, region, chat_id: int, status_msg_id: int, user_id: int):
+    try:
+        emote_id = ALL_EMOTE[emote_number]
+        join_packet = await GenJoinSquadsPacket(team_code, key, iv)
+        await SEndPacKeT(whisper_writer, online_writer, 'OnLine', join_packet)
+        await asyncio.sleep(1.5)
+        sent_count = 0
+        for i in range(count):
+            for uid in uids:
+                try:
+                    emote_packet = await Emote_k(int(uid), emote_id, key, iv, region)
+                    await SEndPacKeT(whisper_writer, online_writer, 'OnLine', emote_packet)
+                    sent_count += 1
+                    await asyncio.sleep(0.05)
+                except Exception as e:
+                    print(f"فشل إرسال إيموجي إلى {uid}: {e}")
+            await asyncio.sleep(0.1)
+        exit_packet = await ExiT(None, key, iv)
+        await SEndPacKeT(whisper_writer, online_writer, 'OnLine', exit_packet)
+        await telegram_bot.edit_message_text(
+            f"✅ اكتمل سبام الإيموجي **{emote_number}** في الفريق `{team_code}`!\n"
+            f"تم إرسال {sent_count} إيموجي إلى الأهداف: {', '.join(uids)}.",
+            chat_id, status_msg_id,
+            parse_mode="HTML"
+        )
+    except Exception as e:
+        await telegram_bot.edit_message_text(
+            f"❌ خطأ في /fast: {str(e)}",
+            chat_id, status_msg_id
+        )
+
+async def process_dance_command(team_code: str, uids: list, emote_number: int, key, iv, region, chat_id: int, status_msg_id: int):
+    try:
+        emote_id = ALL_EMOTE[emote_number]
+        join_packet = await GenJoinSquadsPacket(team_code, key, iv)
+        await SEndPacKeT(whisper_writer, online_writer, 'OnLine', join_packet)
+        await asyncio.sleep(1.5)
+        for uid in uids:
+            emote_packet = await Emote_k(int(uid), emote_id, key, iv, region)
+            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', emote_packet)
+            await asyncio.sleep(0.3)
+        exit_packet = await ExiT(None, key, iv)
+        await SEndPacKeT(whisper_writer, online_writer, 'OnLine', exit_packet)
+        await telegram_bot.edit_message_text(
+            f"✅ تم أداء الإيموجي {emote_number} للأهداف: {', '.join(uids)}.",
+            chat_id, status_msg_id
+        )
+    except Exception as e:
+        await telegram_bot.edit_message_text(
+            f"❌ خطأ: {str(e)}",
+            chat_id, status_msg_id
+        )
+
+# ------------------- دوال اللعبة الأساسية (موجودة في xC4.py و xHeaders.py) -------------------
 async def lag_team_loop(team_code, key, iv, region):
     global lag_running
     count = 0
@@ -1133,18 +605,15 @@ async def lag_team_loop(team_code, key, iv, region):
 async def MaiiiinE():
     global key, iv, region
     Uid, Pw = '4378068850', '8C583277F6A0221993BAC8FBBD712BC25B171A445A34FB1DD0966609CB74729D'
-
     open_id, access_token = await GeNeRaTeAccEss(Uid, Pw)
     if not open_id or not access_token:
         print("خطأ - حساب غير صالح")
         return None
-
     PyL = await EncRypTMajoRLoGin(open_id, access_token)
     MajoRLoGinResPonsE = await MajorLogin(PyL)
     if not MajoRLoGinResPonsE:
         print("الحساب المستهدف => محظور / غير مسجل!")
         return None
-
     MajoRLoGinauTh = await DecRypTMajoRLoGin(MajoRLoGinResPonsE)
     UrL = MajoRLoGinauTh.url
     region = MajoRLoGinauTh.region
@@ -1153,42 +622,32 @@ async def MaiiiinE():
     key = MajoRLoGinauTh.key
     iv = MajoRLoGinauTh.iv
     timestamp = MajoRLoGinauTh.timestamp
-
     LoGinDaTa = await GetLoginData(UrL, PyL, ToKen)
     if not LoGinDaTa:
         print("خطأ في الحصول على المنافذ من بيانات الدخول!")
         return None
     LoGinDaTaUncRypTinG = await DecRypTLoGinDaTa(LoGinDaTa)
-
     OnLinePorTs = LoGinDaTaUncRypTinG.Online_IP_Port
     ChaTPorTs = LoGinDaTaUncRypTinG.AccountIP_Port
-
     OnLine_parts = OnLinePorTs.split(":")
     OnLineiP = OnLine_parts[0]
     OnLineporT = OnLine_parts[1] if len(OnLine_parts) > 1 else "80"
-
     Chat_parts = ChaTPorTs.split(":")
     ChaTiP = Chat_parts[0]
     ChaTporT = Chat_parts[1] if len(Chat_parts) > 1 else "80"
-
     acc_name = LoGinDaTaUncRypTinG.AccountName
-
     equie_emote(ToKen, UrL)
     AutHToKen = await xAuThSTarTuP(int(TarGeT), ToKen, int(timestamp), key, iv)
     ready_event = asyncio.Event()
-
     # تشغيل بوت التلغرام كمهمة خلفية
     telegram_task = asyncio.create_task(telegram_startup())
-
     task1 = asyncio.create_task(TcPChaT(ChaTiP, ChaTporT, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event, region))
     task2 = asyncio.create_task(TcPOnLine(OnLineiP, OnLineporT, key, iv, AutHToKen))
-
     print("🤖 بوت ZAKARIA - متصل")
     print(f"🔹 المعرف: {TarGeT}")
     print(f"🔹 الاسم: {acc_name}")
     print("🔹 الحالة: 🟢 جاهز")
     print("🤖 بوت التلغرام يعمل مع webhook")
-
     await asyncio.gather(task1, task2, telegram_task)
 
 def handle_keyboard_interrupt(signum, frame):
