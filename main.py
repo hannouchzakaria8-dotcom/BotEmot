@@ -22,7 +22,7 @@ from Crypto.Util.Padding import pad, unpad
 # Telegram Bot Imports
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import Message, BufferedInputFile
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 import logging
@@ -36,9 +36,9 @@ key2 = "mg24"
 BYPASS_TOKEN = "your_bypass_token_here"
 
 # ضع توكن البوت هنا مباشرة
-BOT_TOKEN = "8114634187:AAHvWfHfvwNreGfPJ8nvD7cFKLQCf3Ys93E"
+BOT_TOKEN = "8248104861:AAEmzo4Bx2Ss6uiT3zma4CbCUnU717tRIEw"
 ADMIN_TELEGRAM_ID = 6848455321
-BASE_WEBHOOK_URL = "https://botemot-2.onrender.com"  # رابط تطبيقك على Render
+BASE_WEBHOOK_URL = "https://botemot-2.onrender.com"   # <- تم التعديل حسب رابطك الجديد
 
 # قنوات الاشتراك الإجباري
 REQUIRED_CHANNEL = "@Ziko_Tim"
@@ -55,7 +55,7 @@ telegram_bot_running = False
 telegram_bot = None
 telegram_dp = None
 
-# المتغيرات العامة التي تحتاجها دوال الأوامر
+# --- المتغيرات العامة التي تحتاجها دوال الأوامر ---
 key = None
 iv = None
 region = None
@@ -501,7 +501,7 @@ EMOTE_MAP = {
     20: 909034001
 }
 
-# أسماء الرقصات التطورية (باسم ZIKO)
+# أسماء الرقصات التطورية
 EVO_NAMES = {
     1: "AK4 ZIKO",
     2: "SCAR4 ZIKO",
@@ -524,6 +524,73 @@ EVO_NAMES = {
     19: "تطورية ZIKO 19",
     20: "تطورية ZIKO 20"
 }
+
+# ------------------- دوال الـ API الجديدة -------------------
+async def fetch_player_info(uid: str) -> dict:
+    """جلب جميع معلومات اللاعب من الـ API"""
+    url = f"https://foubia-info-ff.vercel.app/{uid}"
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=10) as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                else:
+                    print(f"خطأ في جلب المعلومات: {resp.status}")
+                    return None
+    except Exception as e:
+        print(f"استثناء في جلب المعلومات: {e}")
+        return None
+
+async def fetch_ban_status(uid: str) -> dict:
+    """جلب حالة الحظر من الـ API"""
+    url = f"https://foubia-ban-check.vercel.app/bancheck?key=xTzPrO&uid={uid}"
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=10) as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                else:
+                    print(f"خطأ في جلب حالة الحظر: {resp.status}")
+                    return None
+    except Exception as e:
+        print(f"استثناء في جلب حالة الحظر: {e}")
+        return None
+
+async def fetch_outfit_image(uid: str, region: str, max_retries: int = 2, delay: int = 3) -> bytes:
+    """جلب صورة الأوتفيت مع إعادة المحاولة"""
+    url = f"https://ffoutfitapis.vercel.app/outfit-image?uid={uid}&region={region}&key=99day"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://ffoutfitapis.vercel.app/'
+    }
+    
+    for attempt in range(max_retries):
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers, timeout=30) as resp:
+                    if resp.status == 200:
+                        return await resp.read()
+                    elif resp.status in [403, 404, 500, 502, 503, 504]:
+                        print(f"⚠️ محاولة {attempt+1}: الـ API يعيد {resp.status}. قد تكون الصورة قيد التوليد. ننتظر {delay} ثوانٍ...")
+                        if attempt < max_retries - 1:
+                            await asyncio.sleep(delay)
+                        continue
+                    else:
+                        print(f"❌ خطأ غير متوقع في جلب الأوتفيت: {resp.status}")
+                        return None
+        except asyncio.TimeoutError:
+            print(f"⚠️ محاولة {attempt+1}: انتهت المهلة. نعيد المحاولة بعد {delay} ثوانٍ...")
+            if attempt < max_retries - 1:
+                await asyncio.sleep(delay)
+            continue
+        except Exception as e:
+            print(f"❌ استثناء في جلب الأوتفيت: {e}")
+            return None
+    
+    print("❌ فشلت جميع محاولات جلب الأوتفيت.")
+    return None
 
 # ------------------- دوال التحقق من الاشتراك -------------------
 async def check_subscription(user_id: int) -> bool:
@@ -585,40 +652,59 @@ async def telegram_startup():
         await runner.cleanup()
 
 async def register_handlers(dp: Dispatcher):
-    """تسجيل معالجات الأوامر المطلوبة"""
+    """تسجيل معالجات الأوامر"""
 
     @dp.message(Command("help"))
     async def help_cmd(message: Message):
         if not await require_subscription(message):
             return
         help_text = """
-━━━━━━━━━━━━━━━━━━━━
-〔 🤖 ZIKO BOT 〕
-━━━━━━━━━━━━━━━━━━━━
+╔══════════════════════════╗
+        FPI SX COMMAND
+╚══════════════════════════╝
 
- **🎯 أوامر الترقيص:**
+EMOTE COMMANDS
 
-/dance [team_code] [UID] [1-414]
-├─ إرسال رقصة محددة
-└─ ينضم → يرقص → يغادر
+/dance [team_code] [uid] [1-414]
+Specific Emote
 
-/evo [team_code] [UID] [1-20]
-├─ إرسال رقصة مطورة (ZIKO)
-└─ ينضم → يرقص → يغادر
+/evo [team_code] [uid] [1-20]
+Evolution Emote
 
- **👥 أوامر المجموعة:**
 
-/3 [UID] - إنشاء فريق 3 لاعبين
-/5 [UID] - إنشاء فريق 5 لاعبين
-/6 [UID] - إنشاء فريق 6 لاعبين
-/inv [UID] - إرسال دعوة للاعب
+TEAM COMMANDS
 
-━━━━━━━━━━━━━━━━━━━━
-👤 المالك: @noseyrobot
-🤖 البوت: @ZikoB0SS
-━━━━━━━━━━━━━━━━━━━━
+/3 [uid]
+Create squad for 3 players
+
+/5 [uid]
+Create squad for 5 players
+
+/6 [uid]
+Create squad for 6 players
+
+/inv [uid]
+Send squad invitation
+
+
+PLAYER INFO
+
+/outfit [uid]
+Player outfit image
+
+/all_info [uid]
+Full player information
+
+/check [uid]
+Ban status check
+
+
+──────────────────────────
+
+Owner : @noseyrobot
+Developer : ZAKARIA</>CODEX
 """
-        await message.reply(help_text)
+        await message.reply(help_text, parse_mode='Markdown')
 
     # أوامر المجموعة (3، 5، 6)
     @dp.message(Command("3", "5", "6"))
@@ -634,7 +720,7 @@ async def register_handlers(dp: Dispatcher):
             await message.reply("❌ الرجاء إدخال معرف صحيح!")
             return
         size = int(message.text[1])
-        await message.reply(f"🚀 جاري إنشاء مجموعة {size} لاعبين للمعرف {target_uid}...")
+        await message.reply(f"🚀 جاري إنشاء فريق {size} لاعبين للمعرف {target_uid}...")
         try:
             global online_writer, whisper_writer, key, iv, region
             uid = target_uid
@@ -757,6 +843,49 @@ async def register_handlers(dp: Dispatcher):
         except Exception as e:
             await message.reply(f"❌ خطأ: {str(e)}")
 
+    @dp.message(Command("play"))
+    async def play_cmd(message: Message):
+        # نفس وظيفة /evo تماماً
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 4:
+            await message.reply("❌ الاستخدام: /play [team_code] [UID] [رقم_الرقصة 1-20]")
+            return
+        team_code = parts[1]
+        target_uid = parts[2]
+        try:
+            emote_number = int(parts[3])
+            if emote_number < 1 or emote_number > 20:
+                await message.reply("❌ رقم الرقصة يجب أن يكون بين 1 و 20")
+                return
+        except ValueError:
+            await message.reply("❌ رقم الرقصة غير صالح")
+            return
+
+        emote_name = EVO_NAMES.get(emote_number, f"الرقصة {emote_number}")
+
+        await message.reply(f"🚀 بدء أمر الرقص (play): الفريق {team_code}, الهدف {target_uid}, الرقصة {emote_name}")
+        try:
+            global online_writer, whisper_writer, key, iv, region
+            emote_id = EMOTE_MAP.get(emote_number)
+            if not emote_id:
+                await message.reply("❌ معرف الرقصة غير صالح!")
+                return
+
+            join_packet = await GenJoinSquadsPacket(team_code, key, iv)
+            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', join_packet)
+            await asyncio.sleep(1.5)
+            H = await Emote_k(int(target_uid), emote_id, key, iv, region)
+            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', H)
+            await asyncio.sleep(0.5)
+            leave_packet = await ExiT(None, key, iv)
+            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', leave_packet)
+
+            await message.reply(f"✅ تم إرسال الرقصة **{emote_name}** إلى `{target_uid}` والمغادرة.")
+        except Exception as e:
+            await message.reply(f"❌ خطأ: {str(e)}")
+
     @dp.message(Command("lag"))
     async def lag_cmd(message: Message):
         if not await require_subscription(message):
@@ -790,6 +919,158 @@ async def register_handlers(dp: Dispatcher):
             await message.reply("✅ تم إيقاف هجوم التأخير.")
         else:
             await message.reply("❌ لا يوجد هجوم تأخير نشط.")
+
+    # ------------------- الأوامر الجديدة -------------------
+    @dp.message(Command("outfit"))
+    async def outfit_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ الاستخدام: /outfit [UID]\nمثال: /outfit 123456789")
+            return
+        
+        uid = parts[1]
+        if not uid.isdigit():
+            await message.reply("❌ الرجاء إدخال معرف صحيح!")
+            return
+        
+        status_msg = await message.reply("🔄 جاري تحضير صورة الأوتفيت... (قد يستغرق بضع ثوانٍ)")
+        
+        # جلب معلومات اللاعب لتحديد المنطقة
+        info = await fetch_player_info(uid)
+        if not info or not info.get('basicinfo'):
+            await status_msg.edit_text("❌ فشل في جلب معلومات اللاعب لتحديد المنطقة.")
+            return
+        
+        # استخراج المنطقة (افتراضي ME إذا لم توجد)
+        region_api = info['basicinfo'][0].get('region', 'ME').lower()
+        # التأكد من أن المنطقة صالحة للـ API (me, ind, bd, الخ)
+        valid_regions = ['me', 'ind', 'bd', 'sg', 'id', 'th', 'vn', 'ru', 'br', 'na', 'eu']
+        if region_api not in valid_regions:
+            region_api = 'me'  # قيمة افتراضية
+        
+        await status_msg.edit_text(f"🔄 جاري توليد صورة الأوتفيت للمنطقة **{region_api.upper()}**... قد يستغرق ذلك حتى 10 ثوانٍ.")
+        
+        # جلب الصورة مع إعادة المحاولة
+        image_bytes = await fetch_outfit_image(uid, region_api, max_retries=3, delay=4)
+        
+        if not image_bytes:
+            await status_msg.edit_text("❌ فشل في جلب صورة الأوتفيت بعد عدة محاولات.\nقد يكون اللاعب غير موجود أو الخدمة مشغولة حالياً.")
+            return
+        
+        # إرسال الصورة
+        photo = BufferedInputFile(image_bytes, filename=f"{uid}_outfit.jpg")
+        await message.reply_photo(
+            photo=photo, 
+            caption=f"🎭 **أوتفيت اللاعب**\n🆔 `{uid}`\n🌍 المنطقة: **{region_api.upper()}**"
+        )
+        await status_msg.delete()
+
+    @dp.message(Command("all_info"))
+    async def all_info_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ الاستخدام: /all_info [UID]\nمثال: /all_info 123456789")
+            return
+        
+        uid = parts[1]
+        if not uid.isdigit():
+            await message.reply("❌ الرجاء إدخال معرف صحيح!")
+            return
+        
+        status_msg = await message.reply("🔄 جاري جلب جميع معلومات اللاعب...")
+        
+        data = await fetch_player_info(uid)
+        if not data:
+            await status_msg.edit_text("❌ فشل في جلب المعلومات. تأكد من صحة المعرف.")
+            return
+        
+        # تنسيق الرد بشكل جميل
+        reply = f"📊 **معلومات اللاعب** `{uid}`\n"
+        reply += "━━━━━━━━━━━━━━━━━━━━\n"
+        
+        # المعلومات الأساسية
+        if data.get('basicinfo'):
+            b = data['basicinfo'][0]
+            reply += f"👤 **الاسم:** {b.get('username', 'غير معروف')}\n"
+            reply += f"📈 **المستوى:** {b.get('level', 'N/A')}\n"
+            reply += f"❤️ **الإعجابات:** {b.get('likes', 0):,}\n"
+            reply += f"🌍 **المنطقة:** {b.get('region', 'N/A')}\n"
+            reply += f"📝 **السيرة:** {b.get('bio', 'لا يوجد')[:50]}...\n"
+            reply += f"📅 **تاريخ الإنشاء:** {datetime.fromtimestamp(b.get('createat', 0)).strftime('%Y-%m-%d')}\n"
+            reply += f"🕒 **آخر دخول:** {datetime.fromtimestamp(b.get('lastlogin', 0)).strftime('%Y-%m-%d %H:%M')}\n\n"
+        
+        # معلومات النقابة
+        if data.get('claninfo'):
+            c = data['claninfo'][0]
+            reply += f"🏰 **النقابة:** {c.get('clanname', 'لا يوجد')}\n"
+            reply += f"🆔 **معرف النقابة:** `{c.get('clanid', 'N/A')}`\n"
+            reply += f"📊 **مستوى النقابة:** {c.get('guildlevel', 'N/A')}\n"
+            reply += f"👥 **الأعضاء المتصلون:** {c.get('livemember', 'N/A')}\n\n"
+        else:
+            reply += "🏰 **النقابة:** غير موجودة\n\n"
+        
+        # مشرفي النقابة (أول 3 فقط)
+        if data.get('clanadmin'):
+            reply += "👑 **مشرفو النقابة:**\n"
+            for admin in data['clanadmin'][:3]:
+                reply += f"├─ {admin.get('adminname', 'غير معروف')} (مستوى {admin.get('level', 'N/A')})\n"
+        
+        reply += "━━━━━━━━━━━━━━━━━━━━"
+        
+        await status_msg.edit_text(reply, parse_mode='Markdown')
+
+    @dp.message(Command("check"))
+    async def check_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ الاستخدام: /check [UID]\nمثال: /check 123456789")
+            return
+        
+        uid = parts[1]
+        if not uid.isdigit():
+            await message.reply("❌ الرجاء إدخال معرف صحيح!")
+            return
+        
+        status_msg = await message.reply("🔄 جاري فحص حالة الحظر...")
+        
+        ban_data = await fetch_ban_status(uid)
+        if not ban_data:
+            await status_msg.edit_text("❌ فشل في فحص الحظر. تأكد من صحة المعرف.")
+            return
+        
+        # جلب المعلومات الأساسية لإضافة الاسم والمستوى
+        info = await fetch_player_info(uid)
+        
+        username = "غير معروف"
+        level = "N/A"
+        if info and info.get('basicinfo'):
+            username = info['basicinfo'][0].get('username', 'غير معروف')
+            level = info['basicinfo'][0].get('level', 'N/A')
+        
+        # تنسيق الرد (بدون ban_period)
+        status = ban_data.get('status', 'غير معروف')
+        is_banned = ban_data.get('is_banned', False)
+        
+        if is_banned:
+            status_emoji = "🚫 **محظور**"
+        else:
+            status_emoji = "✅ **غير محظور**"
+        
+        reply = f"🔍 **فحص الحظر**\n"
+        reply += "━━━━━━━━━━━━━━━━━━━━\n"
+        reply += f"👤 **الاسم:** {username}\n"
+        reply += f"📈 **المستوى:** {level}\n"
+        reply += f"🆔 **المعرف:** `{uid}`\n"
+        reply += f"🚦 **الحالة:** {status_emoji}\n"
+        reply += "━━━━━━━━━━━━━━━━━━━━"
+        
+        await status_msg.edit_text(reply, parse_mode='Markdown')
 
 # ------------------- دوال اللعبة الأساسية -------------------
 async def lag_team_loop(team_code, key, iv, region):
