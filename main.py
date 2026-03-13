@@ -702,7 +702,7 @@ Ban status check
 ──────────────────────────
 
 Owner : @noseyrobot
-Developer : ZAKARIA</>CODEX
+Developer : @ZikoB0SS
 """
         await message.reply(help_text, parse_mode='Markdown')
 
@@ -1173,4 +1173,5 @@ async def StarTinG():
 if __name__ == '__main__':
     # تم تعطيل Insta API
     # threading.Thread(target=start_insta_api, daemon=True).start()
+
     asyncio.run(StarTinG())
