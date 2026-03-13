@@ -36,7 +36,7 @@ key2 = "mg24"
 BYPASS_TOKEN = "your_bypass_token_here"
 
 # ضع توكن البوت هنا مباشرة
-BOT_TOKEN = "8248104861:AAEmzo4Bx2Ss6uiT3zma4CbCUnU717tRIEw"
+BOT_TOKEN = "8114634187:AAHvWfHfvwNreGfPJ8nvD7cFKLQCf3Ys93E"
 ADMIN_TELEGRAM_ID = 6848455321
 BASE_WEBHOOK_URL = "https://botemot-2.onrender.com"   # <- تم التعديل حسب رابطك الجديد
 
