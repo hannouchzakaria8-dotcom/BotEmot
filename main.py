@@ -22,7 +22,7 @@ from Crypto.Util.Padding import pad, unpad
 # Telegram Bot Imports
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.types import Message, BufferedInputFile
+from aiogram.types import Message, BufferedInputFile, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 import logging
@@ -69,6 +69,7 @@ EVO_NAMES = {1: "AK4 ZIKO", 2: "SCAR4 ZIKO", 3: "MP40 ZIKO", 4: "MP40 ZIKO 2", 5
 
 # ------------------- دوال الـ API الجديدة -------------------
 async def fetch_player_info(uid: str) -> dict:
+    """جلب جميع معلومات اللاعب من الـ API"""
     url = f"https://foubia-info-ff.vercel.app/{uid}"
     try:
         async with aiohttp.ClientSession() as session:
@@ -83,6 +84,7 @@ async def fetch_player_info(uid: str) -> dict:
         return None
 
 async def fetch_ban_status(uid: str) -> dict:
+    """جلب حالة الحظر من الـ API"""
     url = f"https://foubia-ban-check.vercel.app/bancheck?key=xTzPrO&uid={uid}"
     try:
         async with aiohttp.ClientSession() as session:
@@ -97,6 +99,7 @@ async def fetch_ban_status(uid: str) -> dict:
         return None
 
 async def fetch_outfit_image(uid: str, region: str, max_retries: int = 2, delay: int = 3) -> bytes:
+    """جلب صورة الأوتفيت مع إعادة المحاولة"""
     url = f"https://ffoutfitapis.vercel.app/outfit-image?uid={uid}&region={region}&key=99day"
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -129,6 +132,15 @@ async def fetch_outfit_image(uid: str, region: str, max_retries: int = 2, delay:
     print("❌ فشلت جميع محاولات جلب الأوتفيت.")
     return None
 
+def get_subscription_keyboard():
+    """إنشاء أزرار الاشتراك"""
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="📢 القناة", url="https://t.me/Ziko_Tim")],
+        [InlineKeyboardButton(text="💬 المجموعة", url="https://t.me/MTX_SX_CHAT_TEAM")],
+        [InlineKeyboardButton(text="✅ تحقق", callback_data="check_sub")]
+    ])
+    return keyboard
+
 # ------------------- دوال التحقق من الاشتراك -------------------
 async def check_subscription(user_id: int) -> bool:
     try:
@@ -149,8 +161,8 @@ async def require_subscription(message: Message):
         await message.reply(
             f"⚠️ **عذراً، يجب عليك الاشتراك في القناة والمجموعة التاليتين لاستخدام البوت:**\n\n"
             f"📢 **القناة:** {REQUIRED_CHANNEL}\n"
-            f"💬 **المجموعة:** {REQUIRED_GROUP}\n\n"
-            f"بعد الاشتراك، أرسل الأمر مرة أخرى."
+            f"💬 **المجموعة:** {REQUIRED_GROUP}",
+            reply_markup=get_subscription_keyboard()
         )
         return False
 
@@ -192,10 +204,21 @@ async def telegram_startup():
 async def register_handlers(dp: Dispatcher):
     """تسجيل معالجات الأوامر - مع التعديلات الجديدة"""
 
+    @dp.callback_query(lambda c: c.data == 'check_sub')
+    async def process_callback_check_sub(callback_query: CallbackQuery):
+        user_id = callback_query.from_user.id
+        if await check_subscription(user_id):
+            await callback_query.answer("✅ تم التحقق بنجاح! يمكنك استخدام البوت الآن.")
+            await callback_query.message.edit_text("✅ تم التحقق بنجاح!\nأرسل /help لبدء استخدام البوت.")
+        else:
+            await callback_query.answer("❌ لم تشترك بعد! اشترك ثم حاول مرة أخرى.", show_alert=True)
+
     @dp.message(Command("start"))
     async def start_cmd(message: Message):
         user_id = message.from_user.id
         chat_type = message.chat.type
+        
+        # المطور يعمل لديه البوت في الخاص
         if user_id == ADMIN_TELEGRAM_ID:
             welcome_text = """
 🔥 <b>FPI SX COMMAND</b> 🔥
@@ -215,9 +238,11 @@ async def register_handlers(dp: Dispatcher):
 """
             await message.reply(welcome_text, parse_mode="HTML")
             return
+        
+        # المستخدمين العاديين - لا يعمل في الخاص
         if chat_type == "private":
-            markup = types.InlineKeyboardMarkup(inline_keyboard=[
-                [types.InlineKeyboardButton(text="📢 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
+            markup = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="📢 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
             ])
             await message.reply(
                 "🤖 <b>This bot works only in groups!</b>\n\n"
@@ -226,18 +251,17 @@ async def register_handlers(dp: Dispatcher):
                 parse_mode="HTML"
             )
             return
+        
+        # في المجموعة - التحقق من الاشتراك مع أزرار
         if not await check_subscription(user_id):
-            markup = types.InlineKeyboardMarkup(inline_keyboard=[
-                [types.InlineKeyboardButton(text="📢 Join Channel", url="https://t.me/Ziko_Tim")],
-                [types.InlineKeyboardButton(text="💬 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
-            ])
             await message.reply(
-                "🔒 <b>Subscription Required</b>\n\n"
+                "🔒 **Subscription Required**\n\n"
                 "Please join our channel and group to use the bot:",
-                reply_markup=markup,
-                parse_mode="HTML"
+                reply_markup=get_subscription_keyboard()
             )
             return
+        
+        # قائمة الأوامر الرئيسية
         commands_text = """
 🔥 <b>FPI SX COMMAND</b> 🔥
 
@@ -275,6 +299,8 @@ async def register_handlers(dp: Dispatcher):
     async def help_cmd(message: Message):
         user_id = message.from_user.id
         chat_type = message.chat.type
+        
+        # المطور في الخاص
         if user_id == ADMIN_TELEGRAM_ID and chat_type == "private":
             commands_text = """
 🔥 <b>FPI SX COMMAND</b> 🔥
@@ -309,6 +335,8 @@ async def register_handlers(dp: Dispatcher):
 """
             await message.reply(commands_text, parse_mode="HTML")
             return
+        
+        # في المجموعة
         if chat_type in ["group", "supergroup"]:
             if not await require_subscription(message):
                 return
@@ -345,8 +373,9 @@ async def register_handlers(dp: Dispatcher):
 """
             await message.reply(commands_text, parse_mode="HTML")
         else:
-            markup = types.InlineKeyboardMarkup(inline_keyboard=[
-                [types.InlineKeyboardButton(text="📢 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
+            # أي شيء آخر - رابط المجموعة
+            markup = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="📢 Join Group", url="https://t.me/MTX_SX_CHAT_TEAM")]
             ])
             await message.reply(
                 "🤖 <b>This bot works only in groups!</b>\n\n"
@@ -499,14 +528,257 @@ async def register_handlers(dp: Dispatcher):
                                   message.chat.id, status_msg.message_id)
         )
 
-    # أوامر أخرى (موجودة في الكود الأصلي) يمكن إضافتها هنا...
-    # @dp.message(Command("evo")) ...
-    # @dp.message(Command("play")) ...
-    # @dp.message(Command("outfit")) ...
-    # @dp.message(Command("all_info")) ...
-    # @dp.message(Command("check")) ...
-    # @dp.message(Command("lag")) ...
-    # @dp.message(Command("stop_lag")) ...
+    # ================== أمر /outfit ==================
+    @dp.message(Command("outfit"))
+    async def outfit_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ Usage: /outfit [UID]\nExample: /outfit 123456789")
+            return
+        
+        uid = parts[1]
+        if not uid.isdigit():
+            await message.reply("❌ Invalid UID!")
+            return
+        
+        status_msg = await message.reply("🔄 Preparing outfit image... (may take a few seconds)")
+        
+        info = await fetch_player_info(uid)
+        if not info or not info.get('basicinfo'):
+            await status_msg.edit_text("❌ Failed to fetch player info.")
+            return
+        
+        region_api = info['basicinfo'][0].get('region', 'ME').lower()
+        valid_regions = ['me', 'ind', 'bd', 'sg', 'id', 'th', 'vn', 'ru', 'br', 'na', 'eu']
+        if region_api not in valid_regions:
+            region_api = 'me'
+        
+        await status_msg.edit_text(f"🔄 Generating outfit image for region **{region_api.upper()}**...")
+        
+        image_bytes = await fetch_outfit_image(uid, region_api, max_retries=3, delay=4)
+        
+        if not image_bytes:
+            await status_msg.edit_text("❌ Failed to fetch outfit image.")
+            return
+        
+        photo = BufferedInputFile(image_bytes, filename=f"{uid}_outfit.jpg")
+        await message.reply_photo(
+            photo=photo, 
+            caption=f"🎭 **Player Outfit**\n🆔 `{uid}`\n🌍 Region: **{region_api.upper()}**"
+        )
+        await status_msg.delete()
+
+    # ================== أمر /all_info ==================
+    @dp.message(Command("all_info"))
+    async def all_info_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ Usage: /all_info [UID]\nExample: /all_info 123456789")
+            return
+        
+        uid = parts[1]
+        if not uid.isdigit():
+            await message.reply("❌ Invalid UID!")
+            return
+        
+        status_msg = await message.reply("🔄 Fetching player info...")
+        
+        data = await fetch_player_info(uid)
+        if not data:
+            await status_msg.edit_text("❌ Failed to fetch info. Check UID.")
+            return
+        
+        reply = f"📊 **Player Info** `{uid}`\n"
+        reply += "━━━━━━━━━━━━━━━━━━━━\n"
+        
+        if data.get('basicinfo'):
+            b = data['basicinfo'][0]
+            reply += f"👤 **Name:** {b.get('username', 'Unknown')}\n"
+            reply += f"📈 **Level:** {b.get('level', 'N/A')}\n"
+            reply += f"❤️ **Likes:** {b.get('likes', 0):,}\n"
+            reply += f"🌍 **Region:** {b.get('region', 'N/A')}\n"
+            reply += f"📝 **Bio:** {b.get('bio', 'None')[:50]}...\n"
+            reply += f"📅 **Created:** {datetime.fromtimestamp(b.get('createat', 0)).strftime('%Y-%m-%d')}\n"
+            reply += f"🕒 **Last Login:** {datetime.fromtimestamp(b.get('lastlogin', 0)).strftime('%Y-%m-%d %H:%M')}\n\n"
+        
+        if data.get('claninfo'):
+            c = data['claninfo'][0]
+            reply += f"🏰 **Guild:** {c.get('clanname', 'None')}\n"
+            reply += f"🆔 **Guild ID:** `{c.get('clanid', 'N/A')}`\n"
+            reply += f"📊 **Guild Level:** {c.get('guildlevel', 'N/A')}\n"
+            reply += f"👥 **Members:** {c.get('livemember', 'N/A')}\n\n"
+        else:
+            reply += "🏰 **Guild:** None\n\n"
+        
+        if data.get('clanadmin'):
+            reply += "👑 **Guild Admins:**\n"
+            for admin in data['clanadmin'][:3]:
+                reply += f"├─ {admin.get('adminname', 'Unknown')} (Level {admin.get('level', 'N/A')})\n"
+        
+        reply += "━━━━━━━━━━━━━━━━━━━━"
+        
+        await status_msg.edit_text(reply, parse_mode='Markdown')
+
+    # ================== أمر /check ==================
+    @dp.message(Command("check"))
+    async def check_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ Usage: /check [UID]\nExample: /check 123456789")
+            return
+        
+        uid = parts[1]
+        if not uid.isdigit():
+            await message.reply("❌ Invalid UID!")
+            return
+        
+        status_msg = await message.reply("🔄 Checking ban status...")
+        
+        ban_data = await fetch_ban_status(uid)
+        if not ban_data:
+            await status_msg.edit_text("❌ Failed to check ban status.")
+            return
+        
+        info = await fetch_player_info(uid)
+        
+        username = "Unknown"
+        level = "N/A"
+        if info and info.get('basicinfo'):
+            username = info['basicinfo'][0].get('username', 'Unknown')
+            level = info['basicinfo'][0].get('level', 'N/A')
+        
+        is_banned = ban_data.get('is_banned', False)
+        
+        status_emoji = "🚫 **BANNED**" if is_banned else "✅ **NOT BANNED**"
+        
+        reply = f"🔍 **Ban Check**\n"
+        reply += "━━━━━━━━━━━━━━━━━━━━\n"
+        reply += f"👤 **Name:** {username}\n"
+        reply += f"📈 **Level:** {level}\n"
+        reply += f"🆔 **UID:** `{uid}`\n"
+        reply += f"🚦 **Status:** {status_emoji}\n"
+        reply += "━━━━━━━━━━━━━━━━━━━━"
+        
+        await status_msg.edit_text(reply, parse_mode='Markdown')
+
+    # ================== أمر /evo ==================
+    @dp.message(Command("evo"))
+    async def evo_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 4:
+            await message.reply("❌ Usage: /evo [team_code] [UID] [emote_number 1-20]")
+            return
+        team_code = parts[1]
+        target_uid = parts[2]
+        try:
+            emote_number = int(parts[3])
+            if emote_number < 1 or emote_number > 20:
+                await message.reply("❌ Emote number must be between 1 and 20")
+                return
+        except ValueError:
+            await message.reply("❌ Invalid emote number")
+            return
+
+        emote_name = EVO_NAMES.get(emote_number, f"Evolution {emote_number}")
+
+        await message.reply(f"🚀 Starting evolution dance: Team {team_code}, Target {target_uid}, Emote {emote_name}")
+        try:
+            global online_writer, whisper_writer, key, iv, region
+            emote_id = EMOTE_MAP.get(emote_number)
+            if not emote_id:
+                await message.reply("❌ Invalid evolution emote ID!")
+                return
+
+            join_packet = await GenJoinSquadsPacket(team_code, key, iv)
+            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', join_packet)
+            await asyncio.sleep(1.5)
+            H = await Emote_k(int(target_uid), emote_id, key, iv, region)
+            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', H)
+            await asyncio.sleep(0.5)
+            leave_packet = await ExiT(None, key, iv)
+            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', leave_packet)
+
+            await message.reply(f"✅ Evolution emote **{emote_name}** sent to `{target_uid}`!")
+        except Exception as e:
+            await message.reply(f"❌ Error: {str(e)}")
+
+    # ================== أمر /play ==================
+    @dp.message(Command("play"))
+    async def play_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 3:
+            await message.reply("❌ Usage: /play [UID] [emote_number 1-414]")
+            return
+        target_uid = parts[1]
+        try:
+            emote_number = int(parts[2])
+            if emote_number < 1 or emote_number > 414:
+                await message.reply("❌ Emote number must be between 1 and 414")
+                return
+        except ValueError:
+            await message.reply("❌ Invalid emote number")
+            return
+
+        await message.reply(f"🚀 Sending emote {emote_number} to {target_uid}...")
+        try:
+            global online_writer, whisper_writer, key, iv, region
+            emote_id = ALL_EMOTE.get(emote_number)
+            if not emote_id:
+                await message.reply("❌ Invalid emote ID!")
+                return
+
+            H = await Emote_k(int(target_uid), emote_id, key, iv, region)
+            await SEndPacKeT(whisper_writer, online_writer, 'OnLine', H)
+
+            await message.reply(f"✅ Emote {emote_number} sent to {target_uid}!")
+        except Exception as e:
+            await message.reply(f"❌ Error: {str(e)}")
+
+    # ================== أمر /lag ==================
+    @dp.message(Command("lag"))
+    async def lag_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        parts = message.text.split()
+        if len(parts) < 2:
+            await message.reply("❌ Usage: /lag [team_code]")
+            return
+        team_code = parts[1]
+        await message.reply(f"🚀 Starting lag attack on team {team_code}...")
+        try:
+            global lag_running, lag_task, key, iv, region
+            if lag_task and not lag_task.done():
+                lag_running = False
+                lag_task.cancel()
+                await asyncio.sleep(0.1)
+            lag_running = True
+            lag_task = asyncio.create_task(lag_team_loop(team_code, key, iv, region))
+            await message.reply(f"✅ Lag attack started. To stop: /stop_lag")
+        except Exception as e:
+            await message.reply(f"❌ Error: {str(e)}")
+
+    # ================== أمر /stop_lag ==================
+    @dp.message(Command("stop_lag"))
+    async def stop_lag_cmd(message: Message):
+        if not await require_subscription(message):
+            return
+        global lag_running, lag_task
+        if lag_task and not lag_task.done():
+            lag_running = False
+            lag_task.cancel()
+            await message.reply("✅ Lag attack stopped.")
+        else:
+            await message.reply("❌ No active lag attack.")
 
 # ================== دوال معالجة الأوامر الجديدة ==================
 async def process_invite_command(team_code: str, target_uid: str, key, iv, region, chat_id: int, status_msg_id: int, user_id: int):
@@ -583,7 +855,7 @@ async def process_dance_command(team_code: str, uids: list, emote_number: int, k
             chat_id, status_msg_id
         )
 
-# ------------------- دوال اللعبة الأساسية (موجودة في xC4.py و xHeaders.py) -------------------
+# ------------------- دوال اللعبة الأساسية -------------------
 async def lag_team_loop(team_code, key, iv, region):
     global lag_running
     count = 0
@@ -605,15 +877,18 @@ async def lag_team_loop(team_code, key, iv, region):
 async def MaiiiinE():
     global key, iv, region
     Uid, Pw = '4378068850', '8C583277F6A0221993BAC8FBBD712BC25B171A445A34FB1DD0966609CB74729D'
+
     open_id, access_token = await GeNeRaTeAccEss(Uid, Pw)
     if not open_id or not access_token:
         print("خطأ - حساب غير صالح")
         return None
+
     PyL = await EncRypTMajoRLoGin(open_id, access_token)
     MajoRLoGinResPonsE = await MajorLogin(PyL)
     if not MajoRLoGinResPonsE:
         print("الحساب المستهدف => محظور / غير مسجل!")
         return None
+
     MajoRLoGinauTh = await DecRypTMajoRLoGin(MajoRLoGinResPonsE)
     UrL = MajoRLoGinauTh.url
     region = MajoRLoGinauTh.region
@@ -622,32 +897,42 @@ async def MaiiiinE():
     key = MajoRLoGinauTh.key
     iv = MajoRLoGinauTh.iv
     timestamp = MajoRLoGinauTh.timestamp
+
     LoGinDaTa = await GetLoginData(UrL, PyL, ToKen)
     if not LoGinDaTa:
         print("خطأ في الحصول على المنافذ من بيانات الدخول!")
         return None
     LoGinDaTaUncRypTinG = await DecRypTLoGinDaTa(LoGinDaTa)
+
     OnLinePorTs = LoGinDaTaUncRypTinG.Online_IP_Port
     ChaTPorTs = LoGinDaTaUncRypTinG.AccountIP_Port
+
     OnLine_parts = OnLinePorTs.split(":")
     OnLineiP = OnLine_parts[0]
     OnLineporT = OnLine_parts[1] if len(OnLine_parts) > 1 else "80"
+
     Chat_parts = ChaTPorTs.split(":")
     ChaTiP = Chat_parts[0]
     ChaTporT = Chat_parts[1] if len(Chat_parts) > 1 else "80"
+
     acc_name = LoGinDaTaUncRypTinG.AccountName
+
     equie_emote(ToKen, UrL)
     AutHToKen = await xAuThSTarTuP(int(TarGeT), ToKen, int(timestamp), key, iv)
     ready_event = asyncio.Event()
+
     # تشغيل بوت التلغرام كمهمة خلفية
     telegram_task = asyncio.create_task(telegram_startup())
+
     task1 = asyncio.create_task(TcPChaT(ChaTiP, ChaTporT, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event, region))
     task2 = asyncio.create_task(TcPOnLine(OnLineiP, OnLineporT, key, iv, AutHToKen))
+
     print("🤖 بوت ZAKARIA - متصل")
     print(f"🔹 المعرف: {TarGeT}")
     print(f"🔹 الاسم: {acc_name}")
     print("🔹 الحالة: 🟢 جاهز")
     print("🤖 بوت التلغرام يعمل مع webhook")
+
     await asyncio.gather(task1, task2, telegram_task)
 
 def handle_keyboard_interrupt(signum, frame):
